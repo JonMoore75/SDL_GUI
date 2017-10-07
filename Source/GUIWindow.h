@@ -1,0 +1,55 @@
+#pragma once
+
+#include "GUIWidget.h"
+
+class Renderer;
+
+namespace SGUI
+{
+	class Window : public Widget
+	{
+	public:
+		Window(Widget* pParent = nullptr, const std::string& title = "Untitled") : Widget(pParent), mTitle(title) {}
+		Window(const SGUI::Point& pos, const SGUI::Point& size, Widget* pParent = nullptr, const std::string& title = "Untitled");
+		virtual ~Window() { CleanUp(); }
+
+		void CleanUp() {}
+
+		/// Return the window title
+		const std::string &title() const { return mTitle; }
+		/// Set the window title
+		void setTitle(const std::string &title) { mTitle = title; }
+
+		/// Is this a model dialog?
+		bool modal() const { return mModal; }
+		/// Set whether or not this is a modal dialog
+		void setModal(bool modal) { mModal = modal; }
+
+		/// Handle window drag events
+		virtual bool mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers) override;
+		/// Handle mouse events recursively and bring the current window to the top
+		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers) override;
+		/// Accept scroll events and propagate them to the widget under the mouse cursor
+		virtual bool scrollEvent(const  Point& p, const  Point& rel) override;
+
+		void SetBackgroundColor(const SGUI::Color& col) { mBackgrdColor = col; }
+
+		void Render(Renderer& renderer) override;
+
+	private:
+		SGUI::Color mWindowFillUnfocused{43, 230};
+		SGUI::Color mWindowFillFocused{45, 230};
+		SGUI::Color mWindowTitleUnfocused{220, 160};
+		SGUI::Color mWindowTitleFocused{ 255, 190 };
+		SGUI::Color mBackgrdColor{ 255, 255 };
+		SGUI::Color mEdgeColor = { 0, 0, 255, 255 };
+
+		int mEdge = 2;
+
+		std::string mTitle;
+		bool mModal = false;
+		bool mDrag = false;
+		int mWindowHeaderHeight = 30;
+	};
+
+}
