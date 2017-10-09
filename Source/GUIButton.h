@@ -6,11 +6,11 @@
 
 #include "GUICommon.h"
 #include "GUIWidget.h"
+#include "TextObject.h"
+
 
 namespace SGUI
 {
-	enum CLIPALIGN { CLIPLEFT, CLIPCENTRE, CLIPRIGHT };
-
 	class Button : public Widget
 	{
 	public:
@@ -19,14 +19,13 @@ namespace SGUI
 
 		void CleanUp()
 		{
-			//mFont.Release();
 			mImageNormal.Release();
 			mImagePushed.Release();
 			mImageFocus.Release();
 			mImageText.Release();
 		}
 
-		bool Init(Renderer& renderer, std::string text, int x, int y)
+		bool Init(Renderer& renderer, std::string text, int x, int y, TextObject::CLIPALIGN align = TextObject::CLIPCENTRE)
 		{
 			mCaption = text;
 
@@ -66,38 +65,9 @@ namespace SGUI
 			renderer.OutlineRect(darkRect, mBorderDark);
 			renderer.SetRenderFrameBuffer();
 
-			FontTTF mFont;
-			mFont.LoadFont("kiss_font.ttf", fontSize(), mTextColor);
-			mImageText.CreateFromText(renderer, mCaption, mFont);
-			mFont.Release();
-
-			mTextPos.x = mImageNormal.GetWidth() / 2 - mImageText.GetWidth() / 2;
-			mTextPos.y = mImageNormal.GetHeight() / 2 - mFont.GetHeight() / 2;
-
-			SDL_Rect clipRect{ 0, 0, mImageText.GetWidth(), mImageText.GetHeight() };
-
-			CLIPALIGN align = CLIPRIGHT;
-
-			if (mTextPos.x < 0)
-			{
-				clipRect.w = mImageNormal.GetWidth();
-
-				if (align == CLIPCENTRE)
-					clipRect.x = -mTextPos.x;
-				if (align == CLIPRIGHT)
-					clipRect.x = mImageText.GetWidth() - mImageNormal.GetWidth();
-
-				mTextPos.x = 0;
-			}
-
-			if (mTextPos.y < 0)
-			{
-				clipRect.y = -mTextPos.y;
-				clipRect.h = mImageNormal.GetHeight();
-				mTextPos.y = 0;
-			}
-
-			mImageText.SetClipRect(clipRect);
+			mImageText.SetText(text);
+			mImageText.Create(renderer, "Boku2-Regular.otf", fontSize(), mTextColor);
+			mImageText.TextAlign(align, Point{ mImageNormal.GetWidth(), mImageNormal.GetHeight() });
 
 			return false;
 		}
@@ -147,10 +117,19 @@ namespace SGUI
 			else
 				mImageNormal.Render(renderer, 0, 0);
 
-			mImageText.Render(renderer, mTextPos.x, mTextPos.y);
+			mImageText.Render(renderer);
 
 			Widget::Render(renderer);
 		}
+
+		/// Compute the preferred size of the widget
+		virtual Point preferredSize(Renderer& renderer) const override
+		{
+			Point textBounds = TextBounds("Boku2-Regular.otf", mFontSize, mCaption);
+
+			return Point{ textBounds.x + 20, textBounds.y + 10 };
+		}
+
 
 	private:
 		Color mTextColor{ 255, 160 };
@@ -166,7 +145,6 @@ namespace SGUI
 
 		bool mPushed{ false };
 
-		SGUI::Point mTextPos;
 		std::string mCaption;
 
 		std::function<void()>		mCallback;
@@ -175,9 +153,11 @@ namespace SGUI
 		Texture mImageNormal;
 		Texture mImagePushed;
 		Texture mImageFocus;
-		Texture mImageText;
+		TextObject mImageText;
 	};
 }
+
+
 
 // mStandardFontSize = 16;
 // mButtonFontSize = 20;
@@ -225,71 +205,5 @@ namespace SGUI
 // mWindowPopup = Color(50, 255);
 // mWindowPopupTransparent = Color(50, 0);
 
-// NVGcolor gradTop = mTheme->mButtonGradientTopUnfocused;
-// NVGcolor gradBot = mTheme->mButtonGradientBotUnfocused;
-// 
-// if (mPushed) {
-// 	gradTop = mTheme->mButtonGradientTopPushed;
-// 	gradBot = mTheme->mButtonGradientBotPushed;
-// }
-// else if (mMouseFocus && mEnabled) {
-// 	gradTop = mTheme->mButtonGradientTopFocused;
-// 	gradBot = mTheme->mButtonGradientBotFocused;
-// }
-// 
-// nvgBeginPath(ctx);
-// 
-// nvgRoundedRect(ctx, mPos.x() + 1, mPos.y() + 1.0f, mSize.x() - 2,
-// 	mSize.y() - 2, mTheme->mButtonCornerRadius - 1);
-// 
-// if (mBackgroundColor.w() != 0) {
-// 	nvgFillColor(ctx, Color(mBackgroundColor.head<3>(), 1.f));
-// 	nvgFill(ctx);
-// 	if (mPushed) {
-// 		gradTop.a = gradBot.a = 0.8f;
-// 	}
-// 	else {
-// 		double v = 1 - mBackgroundColor.w();
-// 		gradTop.a = gradBot.a = mEnabled ? v : v * .5f + .5f;
-// 	}
-// }
-// 
-// NVGpaint bg = nvgLinearGradient(ctx, mPos.x(), mPos.y(), mPos.x(),
-// 	mPos.y() + mSize.y(), gradTop, gradBot);
-// 
-// nvgFillPaint(ctx, bg);
-// nvgFill(ctx);
-// 
-// nvgBeginPath(ctx);
-// nvgStrokeWidth(ctx, 1.0f);
-// nvgRoundedRect(ctx, mPos.x() + 0.5f, mPos.y() + (mPushed ? 0.5f : 1.5f), mSize.x() - 1,
-// 	mSize.y() - 1 - (mPushed ? 0.0f : 1.0f), mTheme->mButtonCornerRadius);
-// nvgStrokeColor(ctx, mTheme->mBorderLight);
-// nvgStroke(ctx);
-// 
-// nvgBeginPath(ctx);
-// nvgRoundedRect(ctx, mPos.x() + 0.5f, mPos.y() + 0.5f, mSize.x() - 1,
-// 	mSize.y() - 2, mTheme->mButtonCornerRadius);
-// nvgStrokeColor(ctx, mTheme->mBorderDark);
-// nvgStroke(ctx);
-// 
-// int fontSize = mFontSize == -1 ? mTheme->mButtonFontSize : mFontSize;
-// nvgFontSize(ctx, fontSize);
-// nvgFontFace(ctx, "sans-bold");
-// float tw = nvgTextBounds(ctx, 0, 0, mCaption.c_str(), nullptr, nullptr);
-// 
-// Vector2f center = mPos.cast<float>() + mSize.cast<float>() * 0.5f;
-// Vector2f textPos(center.x() - tw * 0.5f, center.y() - 1);
-// NVGcolor textColor =
-// mTextColor.w() == 0 ? mTheme->mTextColor : mTextColor;
-// if (!mEnabled)
-// textColor = mTheme->mDisabledTextColor;
-// 
-// nvgFontSize(ctx, fontSize);
-// nvgFontFace(ctx, "sans-bold");
-// nvgTextAlign(ctx, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
-// nvgFillColor(ctx, mTheme->mTextColorShadow);
-// nvgText(ctx, textPos.x(), textPos.y(), mCaption.c_str(), nullptr);
-// nvgFillColor(ctx, textColor);
-// nvgText(ctx, textPos.x(), textPos.y() + 1, mCaption.c_str(), nullptr);
+
 

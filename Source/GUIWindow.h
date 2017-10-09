@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GUIWidget.h"
+#include "TextObject.h"
 
 class Renderer;
 
@@ -16,7 +17,7 @@ namespace SGUI
 		void CleanUp() {}
 
 		/// Return the window title
-		const std::string &title() const { return mTitle; }
+		const std::string& title() const { return mTitle.GetText(); }
 		/// Set the window title
 		void setTitle(const std::string &title) { mTitle = title; }
 
@@ -36,6 +37,8 @@ namespace SGUI
 
 		void Render(Renderer& renderer) override;
 
+		Point preferredSize(Renderer& renderer) const override;
+
 	private:
 		SGUI::Color mWindowFillUnfocused{43, 230};
 		SGUI::Color mWindowFillFocused{45, 230};
@@ -46,7 +49,8 @@ namespace SGUI
 
 		int mEdge = 2;
 
-		std::string mTitle;
+		//std::string mTitle;
+		TextObject mTitle;
 		bool mModal = false;
 		bool mDrag = false;
 		int mWindowHeaderHeight = 30;

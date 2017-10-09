@@ -152,9 +152,11 @@
     <ClInclude Include="Source\GUIRootWidget.h" />
     <ClInclude Include="Source\GUITextBox.h" />
     <ClInclude Include="Source\GUIWindow.h" />
+    <ClInclude Include="Source\GUILayout.h" />
     <ClInclude Include="Source\Renderer.h" />
     <ClInclude Include="Source\SDLErrorReport.h" />
     <ClInclude Include="Source\SoundEffect.h" />
+    <ClInclude Include="Source\TextObject.h" />
     <ClInclude Include="Source\Texture.h" />
     <ClInclude Include="Source\TimeKeeper.h" />
     <ClInclude Include="Source\Vec2D.h" />

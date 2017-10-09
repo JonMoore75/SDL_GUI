@@ -1,4 +1,6 @@
 #include "GUICommon.h"
+
+#include "Font_TTF.h"
 #include "Renderer.h"
 
 namespace SGUI
@@ -43,5 +45,16 @@ bool PointinRect(int x, int y, const SGUI::Rect& rect)
 {
 	SGUI::Point point{ x,y };
 	return PointinRect(point, rect);
+}
+
+SGUI::Point TextBounds(const std::string& fontName, int fontSize, const std::string& text)
+{
+	SGUI::Point textSize{ -1, -1 };
+	FontTTF fontTTF;
+	fontTTF.LoadFont(fontName.c_str(), fontSize, SGUI::Color{});
+	fontTTF.SizeUTF8(text, textSize.x, textSize.y);
+	fontTTF.Release();
+
+	return textSize;
 }
 

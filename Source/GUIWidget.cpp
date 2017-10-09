@@ -5,6 +5,7 @@
 
 #include "Renderer.h"
 #include "GUIRootWidget.h"
+#include "GUILayout.h"
 
 namespace SGUI
 {
@@ -24,7 +25,28 @@ namespace SGUI
 		}
 	}
 
-	void Widget::addChild(int index, Widget* widget) 
+	void Widget::setPosition(const Point& pos)
+	{
+		if (mChildren.size())
+		{
+			for (auto& c : mChildren)
+				c->translate(pos - mPos);
+		}
+
+		mPos = pos;
+	}
+
+	void Widget::translate(const Point& translation)
+	{
+		if (mChildren.size())
+		{
+			for (auto& c : mChildren)
+				c->translate(translation);
+		}
+		mPos += translation;
+	}
+
+	void Widget::addChild(int index, Widget* widget)
 	{
 		assert(index <= childCount());
 		mChildren.insert(mChildren.begin() + index, std::unique_ptr<Widget>(widget));
@@ -67,7 +89,36 @@ namespace SGUI
 		return contains(p) ? this : nullptr;
 	}
 
-	void Widget::requestFocus() 
+	SGUI::Point Widget::preferredSize(Renderer& renderer) const
+	{
+		if (mLayout)
+			return mLayout->preferredSize(renderer, this);
+		else
+			return mSize;
+	}
+
+	void Widget::performLayout(Renderer& renderer)
+	{
+		if (mLayout) 
+		{
+			mLayout->performLayout(renderer, this);
+		}
+		else 
+		{
+			for (auto& c : mChildren) 
+			{
+				Point pref = c->preferredSize(renderer);
+				Point fix = c->fixedSize();
+				c->setSize(Point(
+					fix.x ? fix.x : pref.x,
+					fix.y ? fix.y : pref.y
+					));
+				c->performLayout(renderer);
+			}
+		}
+	}
+
+	void Widget::requestFocus()
 	{
 		Widget* widget = this;
 		while (widget->parent())

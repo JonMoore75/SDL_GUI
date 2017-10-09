@@ -18,6 +18,11 @@ namespace SGUI
 		RootWidget() { mTimer.Initialize(); SDL_StartTextInput();}
 		~RootWidget() { SDL_StopTextInput();}
 
+		virtual void Initialise(Renderer& renderer)
+		{
+			Widget::performLayout(renderer);
+		}
+
 		virtual void Render(Renderer& renderer) override
 		{
 			SDL_BlendMode oldMode = renderer.SetRenderDrawMode(SDL_BLENDMODE_BLEND);

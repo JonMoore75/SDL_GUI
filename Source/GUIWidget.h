@@ -6,10 +6,11 @@
 #include <memory>
 #include <vector>
 #include "GUICommon.h"
-//#include "EventHandler.h"
 
 namespace SGUI
 {
+	class Layout;
+
 	enum MouseBut {NONE, LEFT, MIDDLE, RIGHT};
 
 	class MouseButStatus
@@ -30,7 +31,7 @@ namespace SGUI
 	*
 	* \ref Widget is the base class of all widgets in \c SGUI.
 	*/
-	class Widget 
+	class Widget
 	{
 	public:
 		/// Construct a new widget with the given parent widget
@@ -48,20 +49,16 @@ namespace SGUI
 		/// Return the position relative to the parent widget
 		const Point& position() const { return mPos; }
 		/// Set the position relative to the parent widget
-		virtual void setPosition(const Point& pos) { mPos = pos; }
-		void setRelPosition(const Point& relPos) { mPos = (mParent) ? relPos + parent()->position() : relPos; }
+		virtual void setPosition(const Point& pos);
+		void setRelPosition(const Point& relPos) { setPosition((mParent) ? relPos + parent()->position() : relPos); }
 
 		Point relPosition() const
 		{
 			return (mParent) ? mPos - parent()->position() : mPos;
 		}
 
-// 		/// Return the absolute position on screen
-// 		Point absolutePosition() const 
-// 		{
-// 			return mParent ?
-// 				(parent()->absolutePosition() + mPos) : mPos;
-// 		}
+		void translate(const Point& translation);
+
 
 		/// Return the size of the widget
 		const Point& size() const { return mSize; }
@@ -77,6 +74,29 @@ namespace SGUI
 		int height() const { return mSize.y; }
 		/// Set the height of the widget
 		void setHeight(int height) { mSize.y = height; }
+
+		/**
+		* \brief Set the fixed size of this widget
+		*
+		* If nonzero, components of the fixed size attribute override any values
+		* computed by a layout generator associated with this widget. Note that
+		* just setting the fixed size alone is not enough to actually change its
+		* size; this is done with a call to \ref setSize or a call to \ref performLayout()
+		* in the parent widget.
+		*/
+		void setFixedSize(const Point& fixedSize) { mFixedSize = fixedSize; }
+
+		/// Return the fixed size (see \ref setFixedSize())
+		const Point& fixedSize() const { return mFixedSize; }
+
+		// Return the fixed width (see \ref setFixedSize())
+		int fixedWidth() const { return mFixedSize.x; }
+		// Return the fixed height (see \ref setFixedSize())
+		int fixedHeight() const { return mFixedSize.y; }
+		/// Set the fixed width (see \ref setFixedSize())
+		void setFixedWidth(int width) { mFixedSize.x = width; }
+		/// Set the fixed height (see \ref setFixedSize())
+		void setFixedHeight(int height) { mFixedSize.y = height; }
 
 		SGUI::Rect GetRect() const { return SGUI::Rect{mPos, mSize}; }
 
@@ -187,8 +207,11 @@ namespace SGUI
 		/// Determine the widget located at the given position value (recursive)
 		Widget* findWidget(const Point& p);
 
-// 		/// Compute the preferred size of the widget
-// 		virtual Point preferredSize(Renderer& renderer) const;
+ 		/// Compute the preferred size of the widget
+ 		virtual Point preferredSize(Renderer& renderer) const;
+
+		/// Invoke the associated layout generator to properly place child widgets, if any
+		virtual void performLayout(Renderer& renderer);
 
 		/// Handle a mouse button event (default implementation: propagate to children)
 		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers);
@@ -220,14 +243,19 @@ namespace SGUI
 	protected:
 
 	protected:
+		std::vector<std::unique_ptr<Widget>> mChildren;
+		std::unique_ptr<Layout> mLayout;
 		Widget*			mParent{ nullptr };
 		std::string		mId;
-		SGUI::Point		mPos, mSize;
-		std::vector<std::unique_ptr<Widget>> mChildren;
-		bool mVisible{ true }, mEnabled{ true };
-		bool mFocused{ false }, mMouseFocus{ false };
 		std::string		mTooltip;
+		SGUI::Point		mPos; 
+		SGUI::Point		mSize;
+		SGUI::Point		mFixedSize;
 		int				mFontSize{ 15 };
+		bool mVisible{ true }; 
+		bool mEnabled{ true };
+		bool mFocused{ false }; 
+		bool mMouseFocus{ false };
 	};
 }
 

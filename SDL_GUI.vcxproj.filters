@@ -128,5 +128,11 @@
     <ClInclude Include="Source\GUIRootWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\TextObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GUILayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

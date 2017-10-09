@@ -2,6 +2,7 @@
 #define GUICommon_h__
 #pragma once
 
+#include <string>
 #include <SDL.h>
 
 class Renderer;
@@ -74,6 +75,8 @@ SGUI::Point operator-(const SGUI::Point& lhs, const SGUI::Point& rhs);
 
 bool PointinRect(const SGUI::Point& point, const SGUI::Rect& rect);
 bool PointinRect(int x, int y, const SGUI::Rect& rect);
+
+SGUI::Point TextBounds(const std::string& fontName, int fontSize, const std::string& text);
 
 #endif // GUICommon_h__
 

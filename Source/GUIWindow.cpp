@@ -1,6 +1,7 @@
 #include "GUIWindow.h"
 
 #include <assert.h>
+#include <algorithm>
 
 #include "Renderer.h"
 #include "GUIRootWidget.h"
@@ -24,49 +25,44 @@ namespace SGUI
 		renderer.FillRect(rect, mMouseFocus ?mWindowFillFocused : mWindowFillUnfocused);
 
 		/* Draw header */
-		if (!mTitle.empty())
+		if (!mTitle.GetText().empty())
 		{
 			int hh = mWindowHeaderHeight;
+			Color mWindowHeaderGradientTop{ 74, 255 };
+			Color mWindowHeaderSepTop{ 92, 255 };
+			Color mWindowHeaderSepBot{ 29, 255 };
+			Color mDropShadow{ 0, 128 };
+			Color mWindowTitleUnfocused{ 220, 160 };
+			Color mWindowTitleFocused{ 255, 190 };
+
 			Rect headerRect{ Point{ 0,0 }, Point{mSize.x, hh} };
 
-			renderer.FillRect(headerRect, Color{ 74, 255 });
+			renderer.FillRect(headerRect, mWindowHeaderGradientTop);
+			renderer.Line(0, 0, mSize.x, 0, mWindowHeaderSepTop);
+			renderer.Line(0, hh-1, mSize.x, hh-1, mWindowHeaderSepBot);
+
+			if (mTitle.NeedsCreation())
+			{
+				mTitle.Create(renderer, "Boku2-Regular.otf", 18, mWindowTitleUnfocused);
+				mTitle.TextAlign(TextObject::CLIPCENTRE, Point{ mSize.x, hh });
+			}
+
+			mTitle.Render(renderer);		
 		}
 
 		Widget::Render(renderer);
 	}
 
-// 		nvgBeginPath(ctx);
-// 		nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), hh, cr);
-// 		nvgStrokeColor(ctx, mTheme->mWindowHeaderSepTop);
-// 
-// 		nvgSave(ctx);
-// 		nvgIntersectScissor(ctx, mPos.x(), mPos.y(), mSize.x(), 0.5f);
-// 		nvgStroke(ctx);
-// 		nvgRestore(ctx);
-// 
-// 		nvgBeginPath(ctx);
-// 		nvgMoveTo(ctx, mPos.x() + 0.5f, mPos.y() + hh - 1.5f);
-// 		nvgLineTo(ctx, mPos.x() + mSize.x() - 0.5f, mPos.y() + hh - 1.5);
-// 		nvgStrokeColor(ctx, mTheme->mWindowHeaderSepBot);
-// 		nvgStroke(ctx);
-// 
-// 		nvgFontSize(ctx, 18.0f);
-// 		nvgFontFace(ctx, "sans-bold");
-// 		nvgTextAlign(ctx, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-// 
-// 		nvgFontBlur(ctx, 2);
-// 		nvgFillColor(ctx, mTheme->mDropShadow);
-// 		nvgText(ctx, mPos.x() + mSize.x() / 2,
-// 			mPos.y() + hh / 2, mTitle.c_str(), nullptr);
-// 
-// 		nvgFontBlur(ctx, 0);
-// 		nvgFillColor(ctx, mFocused ? mTheme->mWindowTitleFocused
-// 			: mTheme->mWindowTitleUnfocused);
-// 		nvgText(ctx, mPos.x() + mSize.x() / 2, mPos.y() + hh / 2 - 1,
-// 			mTitle.c_str(), nullptr);
-// 	}
-// 
-// 	nvgRestore(ctx);
+	SGUI::Point Window::preferredSize(Renderer& renderer) const
+	{
+		Point result = Widget::preferredSize(renderer);
+		Point textBounds = TextBounds("Boku2-Regular.otf", 18, mTitle.GetText());
+
+		result.x = std::max(result.x, textBounds.x);
+		result.y = std::max(result.y, textBounds.y);
+
+		return result;
+	}
 
 	bool Window::mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers)
 	{

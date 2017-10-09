@@ -108,7 +108,7 @@ namespace SGUI
 
 		void Render(Renderer& renderer) override;
 
-//		virtual Vector2i preferredSize(NVGcontext *ctx) const override;
+		virtual Point preferredSize(Renderer& renderer) const override;
 // 		virtual void save(Serializer &s) const override;
 // 		virtual bool load(Serializer &s) override;
 	protected:

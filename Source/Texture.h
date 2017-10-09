@@ -17,6 +17,7 @@ public:
 
 	void Release();
 	SDL_Texture* GetPtr() { return m_pTexture; }
+	bool isNull() const { return m_pTexture == nullptr; }
 
 	void Render(Renderer& renderer, int x, int y) const;
 	void RenderStretch(Renderer& renderer, SDL_Rect* pDestRect = nullptr) const;

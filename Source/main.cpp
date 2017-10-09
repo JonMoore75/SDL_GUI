@@ -28,19 +28,19 @@ public:
 	GUIState() {}
 	~GUIState() { }
 
-	bool Initialise()				override
+	bool Initialise() override
 	{
 		// Tell root Widget the screen / physical window size
 		mGUI.setSize(SGUI::Point{ m_pWnd->GetWidth(), m_pWnd->GetHeight() });
 
 		SGUI::Point winPos{ m_pWnd->GetWidth() / 3, m_pWnd->GetHeight() / 3 };
 		SGUI::Point winSize{ m_pWnd->GetWidth() / 3, m_pWnd->GetHeight() / 3 };
-		mWin = new SGUI::Window(winPos, winSize, &mGUI);
+		SGUI::Window* mWin{ new SGUI::Window(winPos, winSize, &mGUI) };
 		assert(mWin);
 
 		SGUI::Button* pButton{ new SGUI::Button(m_pWnd->GetRenderer(), "World", m_pWnd->GetWidth() / 2, m_pWnd->GetHeight() / 2, mWin) };
 		assert(pButton);
-		SGUI::Button* pButton2{ new SGUI::Button(m_pWnd->GetRenderer(), "HelloHelloHelloHelloEnd", m_pWnd->GetWidth() / 3, m_pWnd->GetHeight() / 3, mWin) };
+		SGUI::Button* pButton2{ new SGUI::Button(m_pWnd->GetRenderer(), "HelloHelloHelloHelloEnd", m_pWnd->GetWidth() / 2, 2*m_pWnd->GetHeight() / 5, mWin) };
 		assert(pButton2);
 
 		std::function<void()> f = std::bind(&GUIState::ButtonCallback, this);
@@ -48,7 +48,7 @@ public:
 
 		SGUI::TextBox* textBox{ new SGUI::TextBox(mWin, u8"みんなのにほんご") };
 		textBox->setRelPosition(SGUI::Point{ 50,50 });
-		textBox->setSize(SGUI::Point{ 100,30 });
+		textBox->setSize(SGUI::Point{ 100,21 });
 		textBox->setAlignment(SGUI::TextBox::Alignment::Left);
 		textBox->setEditable(true);
 		std::function<bool(const std::string& str)> fedit = [this](const std::string& str) { return EditCallBack(str); };
@@ -78,7 +78,7 @@ public:
 
 	void ButtonCallback() 
 	{
-		mWin->SetBackgroundColor(SGUI::Color{ 255,0,0,255 });
+		
 	}
 
 	bool EditCallBack(const std::string& str)
@@ -123,7 +123,6 @@ public:
 
 private:
 	SGUI::RootWidget mGUI; // Root widget that stores the whole of this scenes GUI
-	SGUI::Window* mWin;
 };
 
 

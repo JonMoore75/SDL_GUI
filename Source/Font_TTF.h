@@ -15,7 +15,8 @@ public:
 
 	void Release();
 
-	void ChangeSize(int ptsize) { m_ptsize = ptsize; }
+	void ChangeFontSize(int ptsize) { m_ptsize = ptsize; }
+	void ChangeColor(SDL_Color color) { m_textColor = color; }
 
 	int GetHeight() const { return m_height; }
 	int GetAscent() const { return m_ascent; }

@@ -38,7 +38,6 @@ mSelectionPos(-1),
 mLastClick(0)
 {
 	mTimer.Initialize();
-//	mImageText.SetAlphaBlend();
 }
 
 void SGUI::TextBox::updateCursor(int posx, SDL_Keymod modifiers)
@@ -424,14 +423,9 @@ void SGUI::TextBox::RenderText(Renderer& renderer)
 
 void SGUI::TextBox::CalculateInitialTextOffset()
 {
-	int textWidth, textHeight;
-
 	// Find the size of the rendered text and store width and height
 	// uses the SizeUTF8 function which sizes without rendering
-	FontTTF mFont;
-	mFont.LoadFont("Boku2-Regular.otf", fontSize(), Color{0,255});
-	mFont.SizeUTF8(mValue, textWidth, textHeight);
-	mFont.Release();
+	Point textSize = TextBounds("Boku2-Regular.otf", mFontSize, mValue);
 
 	// x coord
 	switch (mAlignment)
@@ -440,15 +434,15 @@ void SGUI::TextBox::CalculateInitialTextOffset()
 		mTextOffset.x = 0;
 		break;
 	case Alignment::Right:
-		mTextOffset.x = static_cast<int>(mTextClipRect.w - textWidth);
+		mTextOffset.x = static_cast<int>(mTextClipRect.w - textSize.x);
 		break;
 	case Alignment::Center:
-		mTextOffset.x = static_cast<int>(mTextClipRect.w * 0.5f - textWidth / 2);
+		mTextOffset.x = static_cast<int>(mTextClipRect.w * 0.5f - textSize.x / 2);
 		break;
 	}
 
 	// y coord
-	mTextOffset.y = (mTextClipRect.h - textHeight) / 2;
+	mTextOffset.y = (mTextClipRect.h - textSize.y) / 2;
 }
 
 void SGUI::TextBox::CheckCursorScroll()
@@ -468,6 +462,8 @@ void SGUI::TextBox::CheckCursorScroll()
 			mTextOffset.x += -prevCX + 1;
 	}
 }
+
+
 
 void SGUI::TextBox::Render(Renderer& renderer)
 {
@@ -536,6 +532,29 @@ void SGUI::TextBox::Render(Renderer& renderer)
 	// 				nvgFontSize(ctx, fontSize());
 	// 				nvgFontFace(ctx, "sans");
 	// 			}
+}
+
+SGUI::Point SGUI::TextBox::preferredSize(Renderer& renderer) const
+{
+	float uw = 0;
+	if (mUnitsImage > 0) 
+	{
+// 		int w, h;
+// 		nvgImageSize(ctx, mUnitsImage, &w, &h);
+// 		float uh = size(1) * 0.4f;
+// 		uw = w * uh / h;
+	}
+	else if (!mUnits.empty()) 
+	{
+//		uw = nvgTextBounds(ctx, 0, 0, mUnits.c_str(), nullptr, nullptr);
+	}
+	float sw = (mSpinnable) ? 14.f : 0;
+
+	Point size = TextBounds("Boku2-Regular.otf", mFontSize, mValue);
+
+	size.y = static_cast<int>(size.y * 1.4f);
+ 	size.x = size.y + size.x + static_cast<int>(uw) + static_cast<int>(sw);
+	return size;
 }
 
 bool SGUI::TextBox::checkFormat(const std::string& input, const std::string& format)
