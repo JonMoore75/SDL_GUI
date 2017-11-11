@@ -8,15 +8,14 @@
 
 namespace SGUI
 {
-	Window::Window(const SGUI::Point& pos, const SGUI::Point& size, Widget* pParent /*= nullptr*/, const std::string& title /*= "Untitled"*/)
-		: Widget(pParent),
-		mTitle(title)
+	Window::Window(Widget* parent, const SGUI::Point& pos, const SGUI::Point& size, const std::string& title /*= "Untitled"*/)
+		: Widget{ parent }, mTitle{ title }
 	{
 		setPosition(pos);
 		setSize(size);
 	}
 
-	void Window::Render(Renderer& renderer)
+	void Window::Render(Renderer& renderer, Point& offset)
 	{
 		Point shadowOffset{ 2,2 };
 		Rect rect{ Point{0,0}, mSize };
@@ -50,7 +49,7 @@ namespace SGUI
 			mTitle.Render(renderer);		
 		}
 
-		Widget::Render(renderer);
+		Widget::Render(renderer, offset);
 	}
 
 	SGUI::Point Window::preferredSize(Renderer& renderer) const
@@ -58,7 +57,7 @@ namespace SGUI
 		Point result = Widget::preferredSize(renderer);
 		Point textBounds = TextBounds("Boku2-Regular.otf", 18, mTitle.GetText());
 
-		result.x = std::max(result.x, textBounds.x);
+		result.x = std::max(result.x, textBounds.x + 20);
 		result.y = std::max(result.y, textBounds.y);
 
 		return result;

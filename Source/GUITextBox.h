@@ -106,7 +106,7 @@ namespace SGUI
 
 		virtual bool keyboardCharacterEvent(const std::string& codepoint) override;
 
-		void Render(Renderer& renderer) override;
+		void Render(Renderer& renderer, Point& offset) override;
 
 		virtual Point preferredSize(Renderer& renderer) const override;
 // 		virtual void save(Serializer &s) const override;
@@ -123,7 +123,7 @@ namespace SGUI
 
 		void RenderBorder(Renderer& renderer);
 
-		void RenderText(Renderer& renderer);
+		void RenderText(Renderer& renderer, Point& offset);
 
 		void CalculateInitialTextOffset();
 

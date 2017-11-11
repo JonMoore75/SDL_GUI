@@ -21,58 +21,48 @@ namespace SGUI
 		for (auto& child : mChildren) 
 		{
 			if (child)
+			{
 				child->setParent(nullptr);
+				child->decRef();
+			}
 		}
 	}
 
-	void Widget::setPosition(const Point& pos)
+	void Widget::setLayout(Layout* layout)
 	{
-		if (mChildren.size())
-		{
-			for (auto& c : mChildren)
-				c->translate(pos - mPos);
-		}
-
-		mPos = pos;
-	}
-
-	void Widget::translate(const Point& translation)
-	{
-		if (mChildren.size())
-		{
-			for (auto& c : mChildren)
-				c->translate(translation);
-		}
-		mPos += translation;
+		mLayout.reset(layout);
 	}
 
 	void Widget::addChild(int index, Widget* widget)
 	{
 		assert(index <= childCount());
-		mChildren.insert(mChildren.begin() + index, std::unique_ptr<Widget>(widget));
+		mChildren.insert(mChildren.begin() + index, std::move(widget));
+		widget->incRef();
 		widget->setParent(this);
 	}
 
-	void Widget::addChild(Widget* widget) 
+	void Widget::addChild(Widget* widget)
 	{
 		addChild(childCount(), widget);
 	}
 
 	void Widget::removeChild(const Widget* widget) 
 	{
-		//mChildren.erase( std::remove(mChildren.begin(), mChildren.end(), widget), mChildren.end() );
-		mChildren.erase( std::remove_if(mChildren.begin(), mChildren.end(), [widget](const std::unique_ptr<Widget>& pWidget) { return (pWidget.get() == widget); }) );
+		mChildren.erase( std::remove(mChildren.begin(), mChildren.end(), widget), mChildren.end() );
+		widget->decRef();
+		//mChildren.erase( std::remove_if(mChildren.begin(), mChildren.end(), [widget](const std::unique_ptr<Widget>& pWidget) { return (pWidget.get() == widget); }) );
 	}
 
 	void Widget::removeChild(int index) 
 	{
-		Widget* widget = mChildren[index].get();
+		Widget* widget = mChildren[index];
 		mChildren.erase(mChildren.begin() + index);
+		widget->decRef();
 	}
 
 	int Widget::childIndex(Widget* widget) const 
 	{
-		auto it = std::find_if(mChildren.begin(), mChildren.end(), [widget](const std::unique_ptr<Widget>& pWidget) { return (pWidget.get() == widget); });
+		auto it = std::find_if(mChildren.begin(), mChildren.end(), [widget](const Widget* pWidget) { return (pWidget == widget); });
 		if (it == mChildren.end())
 			return -1;
 		return static_cast<int>(it - mChildren.begin());
@@ -80,11 +70,12 @@ namespace SGUI
 
 	Widget* Widget::findWidget(const Point& p) 
 	{
+		Point relP = p - mPos;
 		for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it) 
 		{
-			Widget* child = it->get();
-			if (child->visible() && child->contains(p))
-				return child->findWidget(p);
+			Widget* child = *it;
+			if (child->visible() && child->contains(relP))
+				return child->findWidget(relP);
 		}
 		return contains(p) ? this : nullptr;
 	}
@@ -129,8 +120,9 @@ namespace SGUI
 			root->updateFocus(this);
 	}
 
-	void Widget::Render(Renderer& renderer) 
+	void Widget::Render(Renderer& renderer, Point& offset)
 	{
+		Point newOffset = offset + mPos;
 		if (mChildren.empty())
 			return;
 		for (auto& child : mChildren) 
@@ -138,8 +130,8 @@ namespace SGUI
 			if (child->visible()) 
 			{
 				SDL_Rect oldViewport = renderer.GetViewport();
- 				renderer.SetViewport(SGUI::Rect{ child->mPos, child->mSize });
-				child->Render(renderer);
+ 				renderer.SetViewport(SGUI::Rect{ child->mPos + newOffset, child->mSize });
+				child->Render(renderer, newOffset);
 				renderer.SetViewport(oldViewport);
 			}
 		}
@@ -147,11 +139,13 @@ namespace SGUI
 
 	bool Widget::mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers)
 	{
+		Point relP = p - mPos;
 		for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it)
 		{
+			
 			auto& child = *it;
-			if (child->visible() && child->contains(p) &&
-				child->mouseButtonEvent(p, button, down, modifiers))
+			if (child->visible() && child->contains(relP) &&
+				child->mouseButtonEvent(relP, button, down, modifiers))
 				return true;
 		}
 		if (button == SGUI::MouseBut::LEFT && down && !mFocused)
@@ -161,21 +155,22 @@ namespace SGUI
 
 	bool Widget::mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers)
 	{
+		Point relP = p - mPos;
 		for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it) 
 		{
 			auto& child = *it;
-
+			
 			if (!child->visible())
 				continue;
 
-			bool contained = child->contains(p); 
-			bool prevContained = child->contains(p - rel);
+			bool contained = child->contains(relP);
+			bool prevContained = child->contains(relP - rel);
 
 			if (contained != prevContained)
-				child->mouseEnterEvent(p, contained);
+				child->mouseEnterEvent(relP, contained);
 
 			if ((contained || prevContained) &&
-				child->mouseMotionEvent(p, rel, buttons, modifiers))
+				child->mouseMotionEvent(relP, rel, buttons, modifiers))
 				return true;
 		}
 		return false;
@@ -183,12 +178,13 @@ namespace SGUI
 
 	bool Widget::scrollEvent(const Point& p, const Point& rel) 
 	{
+		Point relP = p - mPos;
 		for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it) 
 		{
 			auto& child = *it;
 			if (!child->visible())
 				continue;
-			if (child->contains(p) && child->scrollEvent(p, rel))
+			if (child->contains(relP) && child->scrollEvent(relP, rel))
 				return true;
 		}
 		return false;

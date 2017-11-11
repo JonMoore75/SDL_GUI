@@ -19,7 +19,8 @@ bool SetClipboardText(const std::string& str)
 	return SDL_SetClipboardText(str.c_str()) >= 0;
 }
 
-SGUI::TextBox::TextBox(Widget* parent, const std::string& value /*= "Untitled"*/) : Widget(parent),
+SGUI::TextBox::TextBox(Widget* parent, const std::string& value /*= "Untitled"*/) :
+Widget{parent},
 mEditable(false),
 mSpinnable(false),
 mCommitted(true),
@@ -290,7 +291,8 @@ bool SGUI::TextBox::keyboardCharacterEvent(const std::string& codepoint)
 
 	// Find current position in the string
 	auto insertPosIt = mValue.begin();
-	utf8::advance(insertPosIt, mCursorPos, mValue.end());
+	if (mValue.size())
+		utf8::advance(insertPosIt, mCursorPos, mValue.end());
 
 	// insert it into string
 	mValue.insert(insertPosIt, codepoint.begin(), codepoint.end());
@@ -315,7 +317,15 @@ void SGUI::TextBox::PreRenderText(Renderer& renderer)
 		mImageText.CreateFromText(renderer, mValue, mFont);
 	else
 		mImageText.Release();
+
+	if (mImageText.GetWidth() < mTextClipRect.w)
+		CalculateInitialTextOffset();
+
 	CalculateGlyphs(mFont);
+
+	// Make sure cursor hasn't scrolled out of clipping rect, 
+	// if so shift text so it remains visible
+	CheckCursorScroll();
 
 	mFont.Release();
 }
@@ -384,7 +394,7 @@ void SGUI::TextBox::RenderBorder(Renderer& renderer)
 	renderer.OutlineRect(fillRect, Color(0, 48));
 }
 
-void SGUI::TextBox::RenderText(Renderer& renderer)
+void SGUI::TextBox::RenderText(Renderer& renderer, Point& offset)
 {
 	if (mRedrawText)
 	{
@@ -393,7 +403,7 @@ void SGUI::TextBox::RenderText(Renderer& renderer)
 	}
 
 	SDL_Rect oldViewport = renderer.GetViewport();
-	renderer.SetViewport(mTextClipRect);
+	renderer.SetViewport(mTextClipRect + offset);
 
 	// Draw background for highlighted text
 	if (focused() && mSelectionPos > -1)
@@ -434,7 +444,9 @@ void SGUI::TextBox::CalculateInitialTextOffset()
 		mTextOffset.x = 0;
 		break;
 	case Alignment::Right:
-		mTextOffset.x = static_cast<int>(mTextClipRect.w - textSize.x);
+		// -1 at end make sure we always have room to draw cursor on right aligned 
+		// text boxes
+		mTextOffset.x = static_cast<int>(mTextClipRect.w - textSize.x - 1);
 		break;
 	case Alignment::Center:
 		mTextOffset.x = static_cast<int>(mTextClipRect.w * 0.5f - textSize.x / 2);
@@ -455,23 +467,27 @@ void SGUI::TextBox::CheckCursorScroll()
 		int prevCX = cursorIndex2Position(prevCPos) - mTextClipRect.x;
 		int nextCX = cursorIndex2Position(nextCPos) - mTextClipRect.x;
 
-		if (nextCX > mTextClipRect.w)
+		// If cursor has moved out of clipping rect to right, 
+		// shift text left so it's visible
+		if (nextCX >= mTextClipRect.w)
 			mTextOffset.x += mTextClipRect.w - nextCX - 1;
-
-		if (prevCX < 0)
+		
+		// If cursor has moved out of clipping rect to left, 
+		// shift text right so it's visible
+		if (prevCX <= 0)
 			mTextOffset.x += -prevCX + 1;
 	}
 }
 
 
 
-void SGUI::TextBox::Render(Renderer& renderer)
+void SGUI::TextBox::Render(Renderer& renderer, Point& offset)
 {
-	Widget::Render(renderer);
+	Widget::Render(renderer, offset);
 
 	RenderBackground(renderer);
 	RenderBorder(renderer);
-	RenderText(renderer);
+	RenderText(renderer, offset);
 
 
 	// 			if (mUnitsImage > 0) {
@@ -625,7 +641,11 @@ bool SGUI::TextBox::deleteSelection()
 	int begin = mCursorPos;
 	int end = mSelectionPos;
 
-	DeleteCharacters(begin, end);
+	if (begin > end)
+		std::swap(begin, end);
+
+	if (begin != end)
+		DeleteCharacters(begin, end);
 
 	mCursorPos = begin;
 	mSelectionPos = -1;
@@ -637,8 +657,7 @@ bool SGUI::TextBox::deleteSelection()
 
 void SGUI::TextBox::DeleteCharacters(int begin, int end)
 {
-	if (begin > end)
-		std::swap(begin, end);
+	assert(begin < end);
 
 	// As utf8 for some languages have more than one char
 	// per character then use ut8 advance to find correct locations

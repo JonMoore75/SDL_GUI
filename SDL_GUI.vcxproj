@@ -128,6 +128,8 @@
     <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\GameState.cpp" />
     <ClCompile Include="Source\GUICommon.cpp" />
+    <ClCompile Include="Source\GUILabel.cpp" />
+    <ClCompile Include="Source\GUILayout.cpp" />
     <ClCompile Include="Source\GUITextBox.cpp" />
     <ClCompile Include="Source\GUIWindow.cpp" />
     <ClCompile Include="Source\main.cpp" />
@@ -141,6 +143,7 @@
     <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\GUIObject.h" />
     <ClInclude Include="Source\Collision.h" />
     <ClInclude Include="Source\EventHandler.h" />
     <ClInclude Include="Source\Font_TTF.h" />
@@ -149,6 +152,7 @@
     <ClInclude Include="Source\GameState.h" />
     <ClInclude Include="Source\GUIButton.h" />
     <ClInclude Include="Source\GUICommon.h" />
+    <ClInclude Include="Source\GUILabel.h" />
     <ClInclude Include="Source\GUIRootWidget.h" />
     <ClInclude Include="Source\GUITextBox.h" />
     <ClInclude Include="Source\GUIWindow.h" />

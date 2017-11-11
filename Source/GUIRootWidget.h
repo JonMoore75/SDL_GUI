@@ -23,10 +23,10 @@ namespace SGUI
 			Widget::performLayout(renderer);
 		}
 
-		virtual void Render(Renderer& renderer) override
+		virtual void Render(Renderer& renderer, Point& offset) override
 		{
 			SDL_BlendMode oldMode = renderer.SetRenderDrawMode(SDL_BLENDMODE_BLEND);
-			Widget::Render(renderer);
+			Widget::Render(renderer, offset);
 			renderer.SetRenderDrawMode(oldMode);
 		}
 
@@ -105,7 +105,7 @@ namespace SGUI
 			mLastInteraction = mTimer.GetCurrentTime();
 
 			if (mDragActive) 
-				ret = mDragWidget->mouseDragEvent(p, rel, buttons, modifiers);
+				ret = mDragWidget->mouseDragEvent(p - mDragWidget->parent()->absolutePosition(), rel, buttons, modifiers);
 
 			if (!ret)
 				ret = Widget::mouseMotionEvent(p, rel, buttons, modifiers);

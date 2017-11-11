@@ -12,6 +12,8 @@
 #include "GUIRootWidget.h"
 #include "GUIButton.h"
 #include "GUITextBox.h"
+#include "GUILayout.h"
+#include "GUILabel.h"
 
 // SGUI::Point GetFontTextSize(FontTTF& font, std::string str1, std::string str2)
 // {
@@ -35,42 +37,40 @@ public:
 
 		SGUI::Point winPos{ m_pWnd->GetWidth() / 3, m_pWnd->GetHeight() / 3 };
 		SGUI::Point winSize{ m_pWnd->GetWidth() / 3, m_pWnd->GetHeight() / 3 };
-		SGUI::Window* mWin{ new SGUI::Window(winPos, winSize, &mGUI) };
-		assert(mWin);
+		auto pWin = new SGUI::Window(&mGUI, winPos, winSize);
+		assert(pWin);
+		pWin->setLayout(new SGUI::GroupLayout());
 
-		SGUI::Button* pButton{ new SGUI::Button(m_pWnd->GetRenderer(), "World", m_pWnd->GetWidth() / 2, m_pWnd->GetHeight() / 2, mWin) };
+		new SGUI::Label(pWin, "Push buttons");
+
+		SGUI::Button* pButton{ new SGUI::Button(pWin, "World") };
 		assert(pButton);
-		SGUI::Button* pButton2{ new SGUI::Button(m_pWnd->GetRenderer(), "HelloHelloHelloHelloEnd", m_pWnd->GetWidth() / 2, 2*m_pWnd->GetHeight() / 5, mWin) };
+
+		SGUI::Button* pButton2{ new SGUI::Button(pWin, "HelloHelloHelloHelloEnd") };
 		assert(pButton2);
 
 		std::function<void()> f = std::bind(&GUIState::ButtonCallback, this);
 		pButton2->setCallback(f);
 
-		SGUI::TextBox* textBox{ new SGUI::TextBox(mWin, u8"みんなのにほんご") };
-		textBox->setRelPosition(SGUI::Point{ 50,50 });
-		textBox->setSize(SGUI::Point{ 100,21 });
+		SGUI::TextBox* textBox{ new SGUI::TextBox(pWin, u8"みんなのにほんご") };
 		textBox->setAlignment(SGUI::TextBox::Alignment::Left);
 		textBox->setEditable(true);
 		std::function<bool(const std::string& str)> fedit = [this](const std::string& str) { return EditCallBack(str); };
 		textBox->setCallback(fedit);
 
-		textBox= new SGUI::TextBox(mWin, "Text");
-		textBox->setRelPosition(SGUI::Point{ 50,90 });
-		textBox->setSize(SGUI::Point{ 100,30 });
+		textBox= new SGUI::TextBox(pWin, "Text");
 		textBox->setAlignment(SGUI::TextBox::Alignment::Center);
 		textBox->setEditable(true);
 
-		textBox= new SGUI::TextBox(mWin, "Text");
-		textBox->setRelPosition(SGUI::Point{ 50,130 });
-		textBox->setSize(SGUI::Point{ 100,30 });
+		textBox= new SGUI::TextBox(pWin, "Text");
 		textBox->setAlignment(SGUI::TextBox::Alignment::Right);
 		textBox->setEditable(true);
 
-		textBox = new SGUI::TextBox(mWin, "VeryVeryVeryVeryVeryLongText");
-		textBox->setRelPosition(SGUI::Point{ 50,170 });
-		textBox->setSize(SGUI::Point{ 100,30 });
+		textBox = new SGUI::TextBox(pWin, "VeryVeryVeryVeryVeryLongText");
 		textBox->setAlignment(SGUI::TextBox::Alignment::Right);
 		textBox->setEditable(true);
+
+		mGUI.performLayout(m_pWnd->GetRenderer());
 
 		return true; 
 	};
@@ -88,7 +88,7 @@ public:
 
 	void Render(Renderer& renderer)	override
 	{
-		mGUI.Render(renderer);
+		mGUI.Render(renderer, SGUI::Point{ 0,0 });
 	}
 
 	void CleanUp() override {}

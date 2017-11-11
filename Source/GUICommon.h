@@ -23,9 +23,14 @@ namespace SGUI
 			return *this;
 		}
 
+		bool isZero() const
+		{
+			return (x == 0 && y == 0);
+		}
+
 		bool notZero() const
 		{
-			return (x !=0 && y !=0);
+			return !isZero();
 		}
 
 		void ClampMin(const Point& minLimit)
@@ -72,6 +77,8 @@ namespace SGUI
 
 SGUI::Point operator+(const SGUI::Point& lhs, const SGUI::Point& rhs);
 SGUI::Point operator-(const SGUI::Point& lhs, const SGUI::Point& rhs);
+
+SGUI::Rect operator+(const SGUI::Rect& lhs, const SGUI::Point& rhs);
 
 bool PointinRect(const SGUI::Point& point, const SGUI::Rect& rect);
 bool PointinRect(int x, int y, const SGUI::Rect& rect);

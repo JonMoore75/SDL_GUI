@@ -39,7 +39,7 @@ public:
 		SGUI::Point textSize{ mTextTexture.GetWidth(), mTextTexture.GetHeight() };
 
 		mOffset.x = trgtSize.x / 2 - textSize.x / 2;
-		mOffset.y = trgtSize.y / 2 - textSize.y / 2;
+		mOffset.y = (trgtSize.y == 0) ? 0 : trgtSize.y / 2 - textSize.y / 2;
 
 		if (align == CLIPLEFT)
 			mOffset.x = 0;

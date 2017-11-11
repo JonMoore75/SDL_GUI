@@ -14,7 +14,7 @@ namespace SGUI
 	class Button : public Widget
 	{
 	public:
-		Button(Renderer& renderer, std::string text, int x = 0, int y = 0, Widget* parent = nullptr) : Widget(parent) { Init(renderer, text, x, y); }
+		Button(Widget* parent, std::string text) : Widget{parent}, mImageText{ text } { }
 		virtual ~Button() { CleanUp(); }
 
 		void CleanUp()
@@ -25,16 +25,10 @@ namespace SGUI
 			mImageText.Release();
 		}
 
-		bool Init(Renderer& renderer, std::string text, int x, int y, TextObject::CLIPALIGN align = TextObject::CLIPCENTRE)
+		void PreRender(Renderer& renderer, TextObject::CLIPALIGN align = TextObject::CLIPCENTRE)
 		{
-			mCaption = text;
-
- 			mImageNormal.CreateFromFile(renderer, "kiss_normal.png");
-			mImagePushed.CreateFromFile(renderer, "kiss_active.png");
-			mImageFocus.CreateFromFile(renderer, "kiss_prelight.png");
-
-			setPosition(Point{ x, y });
-			setSize(Point{ mImageNormal.GetWidth(), mImageNormal.GetHeight() });
+			if (mSize.isZero())
+				setSize( preferredSize(renderer) );
 
 			mImageNormal.Create(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width(), height());
 			renderer.SetRenderTexture(mImageNormal);
@@ -65,11 +59,9 @@ namespace SGUI
 			renderer.OutlineRect(darkRect, mBorderDark);
 			renderer.SetRenderFrameBuffer();
 
-			mImageText.SetText(text);
+			
 			mImageText.Create(renderer, "Boku2-Regular.otf", fontSize(), mTextColor);
 			mImageText.TextAlign(align, Point{ mImageNormal.GetWidth(), mImageNormal.GetHeight() });
-
-			return false;
 		}
 
 		void SetTextColor(const SGUI::Color& col) { mTextColor = col; }
@@ -96,9 +88,9 @@ namespace SGUI
 				}
 				else if (mPushed)
 				{
+					mPushed = false;
 					if (contains(p) && mCallback)
 						mCallback();
-					mPushed = false;
 				}
 				if (pushedBackup != mPushed && mChangeCallback)
 					mChangeCallback(mPushed);
@@ -108,8 +100,11 @@ namespace SGUI
 			return false;
 		}
 
-		void Render(Renderer& renderer) override
+		void Render(Renderer& renderer, Point& offset) override
 		{
+			if (mImageText.NeedsCreation())
+				PreRender(renderer);
+
 			if (mPushed)
 				mImagePushed.Render(renderer, 0, 0);
 			else if (mMouseFocus && mEnabled)
@@ -119,13 +114,13 @@ namespace SGUI
 
 			mImageText.Render(renderer);
 
-			Widget::Render(renderer);
+			Widget::Render(renderer, offset);
 		}
 
 		/// Compute the preferred size of the widget
 		virtual Point preferredSize(Renderer& renderer) const override
 		{
-			Point textBounds = TextBounds("Boku2-Regular.otf", mFontSize, mCaption);
+			Point textBounds = TextBounds("Boku2-Regular.otf", mFontSize, mImageText.GetText());
 
 			return Point{ textBounds.x + 20, textBounds.y + 10 };
 		}
@@ -145,7 +140,7 @@ namespace SGUI
 
 		bool mPushed{ false };
 
-		std::string mCaption;
+//		std::string mCaption;
 
 		std::function<void()>		mCallback;
 		std::function<void(bool)>	mChangeCallback;

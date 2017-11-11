@@ -31,6 +31,11 @@ SGUI::Point operator+(const SGUI::Point& lhs, const SGUI::Point& rhs)
 	return SGUI::Point{ lhs.x + rhs.x, lhs.y + rhs.y };
 }
 
+SGUI::Rect operator+(const SGUI::Rect& lhs, const SGUI::Point& rhs)
+{
+	return SGUI::Rect{ lhs.x + rhs.x, lhs.y + rhs.y, lhs.w, lhs.h };
+}
+
 SGUI::Point operator-(const SGUI::Point& lhs, const SGUI::Point& rhs)
 {
 	return SGUI::Point{ lhs.x - rhs.x, lhs.y - rhs.y };

@@ -2,6 +2,7 @@
 
 #include "GUIWidget.h"
 #include "TextObject.h"
+#include "GUILayout.h"
 
 class Renderer;
 
@@ -10,8 +11,9 @@ namespace SGUI
 	class Window : public Widget
 	{
 	public:
-		Window(Widget* pParent = nullptr, const std::string& title = "Untitled") : Widget(pParent), mTitle(title) {}
-		Window(const SGUI::Point& pos, const SGUI::Point& size, Widget* pParent = nullptr, const std::string& title = "Untitled");
+		friend class GroupLayout;
+		Window(Widget* parent, const std::string& title = "Untitled") : Widget{ parent }, mTitle{ title } {}
+		Window(Widget* parent, const SGUI::Point& pos, const SGUI::Point& size, const std::string& title = "Untitled");
 		virtual ~Window() { CleanUp(); }
 
 		void CleanUp() {}
@@ -35,7 +37,7 @@ namespace SGUI
 
 		void SetBackgroundColor(const SGUI::Color& col) { mBackgrdColor = col; }
 
-		void Render(Renderer& renderer) override;
+		void Render(Renderer& renderer, Point& offset) override;
 
 		Point preferredSize(Renderer& renderer) const override;
 

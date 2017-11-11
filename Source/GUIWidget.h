@@ -6,6 +6,7 @@
 #include <memory>
 #include <vector>
 #include "GUICommon.h"
+#include "GUIObject.h"
 
 namespace SGUI
 {
@@ -31,7 +32,7 @@ namespace SGUI
 	*
 	* \ref Widget is the base class of all widgets in \c SGUI.
 	*/
-	class Widget
+	class Widget : public Object
 	{
 	public:
 		/// Construct a new widget with the given parent widget
@@ -46,18 +47,25 @@ namespace SGUI
 		/// Set the parent widget
 		void setParent(Widget* parent) { mParent = parent; }
 
+		/// Return the used \ref Layout generator
+		Layout* layout() { return mLayout.get(); }
+		/// Return the used \ref Layout generator
+		const Layout* layout() const { return mLayout.get(); }
+		/// Set the used \ref Layout generator
+		void setLayout(Layout* layout);
+
 		/// Return the position relative to the parent widget
 		const Point& position() const { return mPos; }
 		/// Set the position relative to the parent widget
-		virtual void setPosition(const Point& pos);
-		void setRelPosition(const Point& relPos) { setPosition((mParent) ? relPos + parent()->position() : relPos); }
+		void setPosition(const Point& pos) { mPos = pos; }
 
-		Point relPosition() const
-		{
-			return (mParent) ? mPos - parent()->position() : mPos;
+		/// Return the absolute position on screen
+		Point absolutePosition() const {
+			return mParent ?
+				(parent()->absolutePosition() + mPos) : mPos;
 		}
 
-		void translate(const Point& translation);
+		void translate(const Point& translation) { mPos += translation; }
 
 
 		/// Return the size of the widget
@@ -89,9 +97,9 @@ namespace SGUI
 		/// Return the fixed size (see \ref setFixedSize())
 		const Point& fixedSize() const { return mFixedSize; }
 
-		// Return the fixed width (see \ref setFixedSize())
+		/// Return the fixed width (see \ref setFixedSize())
 		int fixedWidth() const { return mFixedSize.x; }
-		// Return the fixed height (see \ref setFixedSize())
+		/// Return the fixed height (see \ref setFixedSize())
 		int fixedHeight() const { return mFixedSize.y; }
 		/// Set the fixed width (see \ref setFixedSize())
 		void setFixedWidth(int width) { mFixedSize.x = width; }
@@ -123,7 +131,7 @@ namespace SGUI
 		int childCount() const { return static_cast<int>(mChildren.size()); }
 
 		/// Return the list of child widgets of the current widget
-//		const std::vector<Widget*>& children() const { return mChildren; }
+		const std::vector<Widget*>& children() const { return mChildren; }
 
 		/**
 		* \brief Add a child widget to the current widget at
@@ -142,13 +150,13 @@ namespace SGUI
 		void removeChild(int index);
 
 		/// Remove a child widget by value
-		void removeChild(const Widget *widget);
+		void removeChild(const Widget* widget);
 
 		/// Retrieves the child at the specific position
-		const Widget* childAt(int index) const { return mChildren[index].get(); }
+		const Widget* childAt(int index) const { return mChildren[index]; }
 
 		/// Retrieves the child at the specific position
-		Widget* childAt(int index) { return mChildren[index].get(); }
+		Widget* childAt(int index) { return mChildren[index]; }
 
 		/// Returns the index of a specific child or -1 if not found
 		int childIndex(Widget* widget) const;
@@ -238,12 +246,12 @@ namespace SGUI
 		virtual bool keyboardCharacterEvent(const std::string& codepoint) { return false; }
 
 		/// Draw the widget (and all child widgets)
-		virtual void Render(Renderer& renderer);
+		virtual void Render(Renderer& renderer, Point& offset);
 
 	protected:
 
 	protected:
-		std::vector<std::unique_ptr<Widget>> mChildren;
+		std::vector<Widget*> mChildren;
 		std::unique_ptr<Layout> mLayout;
 		Widget*			mParent{ nullptr };
 		std::string		mId;
