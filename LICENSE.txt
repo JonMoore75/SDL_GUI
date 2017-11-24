@@ -1,4 +1,6 @@
-Copyright (c) 2017 Wenzel Jakob <wenzel.jakob@epfl.ch>, All rights reserved.
+Copyright (c) 2017 Jon Moore <jonr.moore75@gmail.com>, All rights reserved.
+Code derived from NanoGUI is copyright of Wenzel Jakob <wenzel.jakob@epfl.ch>  
+under the same license as below
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
