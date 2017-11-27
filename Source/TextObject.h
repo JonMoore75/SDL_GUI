@@ -19,6 +19,12 @@ public:
 	void SetText(const std::string& text) { mText = text; }
 	const std::string& GetText() const { return mText; }
 
+	void SetAlpha(Uint8 alpha) { mTextTexture.SetAlpha(alpha); }
+
+	SGUI::Point getSize() const { return SGUI::Point{ mTextTexture.GetWidth(), mTextTexture.GetHeight() }; }
+	int getWidth() const { return mTextTexture.GetWidth(); }
+	int getHeight() const { return mTextTexture.GetHeight(); }
+
 	bool NeedsCreation() const
 	{ 
 		return !mText.empty() && mTextTexture.isNull();

@@ -26,7 +26,15 @@ namespace SGUI
 		virtual void Render(Renderer& renderer, Point& offset) override
 		{
 			SDL_BlendMode oldMode = renderer.SetRenderDrawMode(SDL_BLENDMODE_BLEND);
+
+			// Draw the widget tree
 			Widget::Render(renderer, offset);
+
+			// If there is a widget under the mouse with a tooltip, draw tootip after 0.5 secs
+ 			double elapsed =  mTimer.GetCurrentTime() - mLastInteraction;
+ 			if (elapsed > 0.5f && mFocusWidget && !mFocusWidget->tooltip().empty())
+ 				DrawFocusedWidgetTooltip(renderer, elapsed);
+
 			renderer.SetRenderDrawMode(oldMode);
 		}
 
@@ -104,6 +112,13 @@ namespace SGUI
 			bool ret = false;
 			mLastInteraction = mTimer.GetCurrentTime();
 
+			Widget* newFocusWidget = findWidget(p);
+			if (newFocusWidget != mFocusWidget)
+			{
+				mTooltipText.Release();
+			}
+			mFocusWidget = newFocusWidget;
+
 			if (mDragActive) 
 				ret = mDragWidget->mouseDragEvent(p - mDragWidget->parent()->absolutePosition(), rel, buttons, modifiers);
 
@@ -113,11 +128,51 @@ namespace SGUI
 			return ret;
 		}
 
+		void DrawFocusedWidgetTooltip(Renderer& renderer, double elapsed)
+		{
+			static int tipFontSize = 15;
+			static int tooltipWidth = 150;
+
+			Point pos = mFocusWidget->absolutePosition() +
+				Point(mFocusWidget->width() / 2, mFocusWidget->height() + 10);
+
+			// Increase alpha with time so tooltip fades in
+			Uint8 alpha = static_cast<Uint8>(255*std::min(1.0, 2 * (elapsed - 0.5f)) * 0.8);
+
+			mTooltipText.SetText(mFocusWidget->tooltip());
+
+			if (mTooltipText.NeedsCreation())
+			{
+				// Create texture, TODO make it wrap to toolTipwidth
+				mTooltipText.Create(renderer, "Boku2-Regular.otf", tipFontSize, Color(255, 255));
+			}
+
+			// TODO Draw triangle pointing to widget
+// 			int px = (int)((bounds[2] + bounds[0]) / 2) - h;
+// 			nvgMoveTo(mNVGContext, px, bounds[1] - 10);
+// 			nvgLineTo(mNVGContext, px + 7, bounds[1] + 1);
+// 			nvgLineTo(mNVGContext, px - 7, bounds[1] + 1);
+// 			nvgFill(mNVGContext);
+
+			int halfwidth = mTooltipText.getWidth() / 2;
+			Rect tooltipRect{ pos.x - 4 - halfwidth, pos.y - 4, mTooltipText.getWidth() + 8, mTooltipText.getHeight() + 8 };
+
+			renderer.FillRect(tooltipRect, Color(0, alpha));
+			renderer.OutlineRect(tooltipRect, Color(5, alpha));
+			mTooltipText.SetAlpha(alpha);
+			mTooltipText.Render(renderer, pos);
+		}
+
 
 	private:
 		Widget* mDragWidget{ nullptr };
+		Widget* mFocusWidget{ nullptr };
 		bool	mDragActive{ false };
+
+		TextObject mTooltipText;
+
 		std::vector<Widget*> mFocusPath;
+
 		double mLastInteraction{ 0.0 };
 		TimeKeeper mTimer;
 	};

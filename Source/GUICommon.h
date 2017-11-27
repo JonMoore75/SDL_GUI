@@ -55,11 +55,14 @@ namespace SGUI
 	class Rect : public SDL_Rect
 	{
 	public:
-		Rect(int _x = 0, int _y = 0, int _w = 0, int  _h = 0) { x = _x; y = _y; w = _w; h = _h;  }
+		Rect(int _x = 0, int _y = 0, int _w = 0, int  _h = 0) { x = _x; y = _y; w = _w; h = _h; }
 		Rect(const Point& pos, const Point& size) { x = pos.x; y = pos.y; w = size.x; h = size.y; }
 
-		Point getPosition() const { return Point{x,y}; }
-		Point getSize() const { return Point{w,h}; }
+		Point getPosition() const { return Point{ x,y }; }
+		Point getSize() const { return Point{ w,h }; }
+
+		void setPosition(const Point& pos) { x = pos.x; y = pos.y; }
+		void setSize(const Point& size) { w = size.x; h = size.y; }
 		~Rect() {}
 	};
 

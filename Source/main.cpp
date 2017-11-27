@@ -45,6 +45,7 @@ public:
 
 		SGUI::Button* pButton{ new SGUI::Button(pWin, "World") };
 		assert(pButton);
+		pButton->setTooltip("Tooltip");
 
 		SGUI::Button* pButton2{ new SGUI::Button(pWin, "HelloHelloHelloHelloEnd") };
 		assert(pButton2);
