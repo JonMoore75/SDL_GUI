@@ -11,6 +11,7 @@
 namespace SGUI
 {
 	class Layout;
+	class Theme;
 
 	enum MouseBut {NONE, LEFT, MIDDLE, RIGHT};
 
@@ -52,7 +53,14 @@ namespace SGUI
 		/// Return the used \ref Layout generator
 		const Layout* layout() const { return mLayout.get(); }
 		/// Set the used \ref Layout generator
-		void setLayout(Layout* layout);
+		void setLayout(Layout* layout) { mLayout = layout; }
+		
+		/// Return the \ref Theme used to draw this widget
+		Theme* theme() { return mTheme; }
+		/// Return the \ref Theme used to draw this widget
+		const Theme* theme() const { return mTheme.get(); }
+		/// Set the \ref Theme used to draw this widget
+		virtual void setTheme(Theme* theme);
 
 		/// Return the position relative to the parent widget
 		const Point& position() const { return mPos; }
@@ -182,7 +190,7 @@ namespace SGUI
 		/// Return whether or not this widget is currently enabled
 		bool enabled() const { return mEnabled; }
 		/// Set whether or not this widget is currently enabled
-		void setEnabled(bool enabled) { mEnabled = enabled; }
+		virtual void setEnabled(bool enabled) { mEnabled = enabled; }
 
 		/// Return whether or not this widget is currently focused
 		bool focused() const { return mFocused; }
@@ -195,7 +203,8 @@ namespace SGUI
 		void setTooltip(const std::string& tooltip) { mTooltip = tooltip; }
 
 		/// Return current font size. If not set the default of the current theme will be returned
-		int fontSize() const { return mFontSize; }
+		int fontSize() const;
+
 		/// Set the font size of this widget
 		void setFontSize(int fontSize) { mFontSize = fontSize; }
 		/// Return whether the font size is explicitly specified for this widget
@@ -252,7 +261,8 @@ namespace SGUI
 
 	protected:
 		std::vector<Widget*> mChildren;
-		std::unique_ptr<Layout> mLayout;
+		ref<Theme> mTheme;
+		ref<Layout> mLayout;
 		Widget*			mParent{ nullptr };
 		std::string		mId;
 		std::string		mTooltip;

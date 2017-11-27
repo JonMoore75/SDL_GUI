@@ -131,6 +131,7 @@
     <ClCompile Include="Source\GUILabel.cpp" />
     <ClCompile Include="Source\GUILayout.cpp" />
     <ClCompile Include="Source\GUITextBox.cpp" />
+    <ClCompile Include="Source\GUITheme.cpp" />
     <ClCompile Include="Source\GUIWindow.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Renderer.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Source\GUILabel.h" />
     <ClInclude Include="Source\GUIRootWidget.h" />
     <ClInclude Include="Source\GUITextBox.h" />
+    <ClInclude Include="Source\GUITheme.h" />
     <ClInclude Include="Source\GUIWindow.h" />
     <ClInclude Include="Source\GUILayout.h" />
     <ClInclude Include="Source\Renderer.h" />

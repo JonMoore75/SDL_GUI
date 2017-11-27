@@ -35,19 +35,19 @@ namespace SGUI
 		/// Accept scroll events and propagate them to the widget under the mouse cursor
 		virtual bool scrollEvent(const  Point& p, const  Point& rel) override;
 
-		void SetBackgroundColor(const SGUI::Color& col) { mBackgrdColor = col; }
+//		void SetBackgroundColor(const SGUI::Color& col) { mBackgrdColor = col; }
 
 		void Render(Renderer& renderer, Point& offset) override;
 
 		Point preferredSize(Renderer& renderer) const override;
 
 	private:
-		SGUI::Color mWindowFillUnfocused{43, 230};
-		SGUI::Color mWindowFillFocused{45, 230};
-		SGUI::Color mWindowTitleUnfocused{220, 160};
-		SGUI::Color mWindowTitleFocused{ 255, 190 };
-		SGUI::Color mBackgrdColor{ 255, 255 };
-		SGUI::Color mEdgeColor = { 0, 0, 255, 255 };
+// 		SGUI::Color mWindowFillUnfocused{43, 230};
+// 		SGUI::Color mWindowFillFocused{45, 230};
+// 		SGUI::Color mWindowTitleUnfocused{220, 160};
+// 		SGUI::Color mWindowTitleFocused{ 255, 190 };
+// 		SGUI::Color mBackgrdColor{ 255, 255 };
+// 		SGUI::Color mEdgeColor = { 0, 0, 255, 255 };
 
 		int mEdge = 2;
 
@@ -55,7 +55,7 @@ namespace SGUI
 		TextObject mTitle;
 		bool mModal = false;
 		bool mDrag = false;
-		int mWindowHeaderHeight = 30;
+//		int mWindowHeaderHeight = 30;
 	};
 
 }

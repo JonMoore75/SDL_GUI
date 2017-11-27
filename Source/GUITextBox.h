@@ -85,8 +85,8 @@ namespace SGUI
 		/// Specify a regular expression specifying valid formats
 		void setFormat(const std::string& format) { mFormat = format; }
 
-// 		/// Set the \ref Theme used to draw this widget
-// 		virtual void setTheme(Theme *theme) override;
+		/// Set the \ref Theme used to draw this widget
+		virtual void setTheme(Theme* theme) override;
 
 		/// Set the change callback
 		std::function<bool(const std::string& str)> callback() const { return mCallback; }
@@ -109,6 +109,8 @@ namespace SGUI
 		void Render(Renderer& renderer, Point& offset) override;
 
 		virtual Point preferredSize(Renderer& renderer) const override;
+
+		virtual void setEnabled(bool enabled) override;
 // 		virtual void save(Serializer &s) const override;
 // 		virtual bool load(Serializer &s) override;
 	protected:

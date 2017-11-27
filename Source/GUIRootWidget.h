@@ -8,6 +8,7 @@
 #include "GUICommon.h"
 #include "GUIWidget.h"
 #include "GUIWindow.h"
+#include "GUITheme.h"
 #include "TimeKeeper.h"
 
 namespace SGUI
@@ -15,13 +16,13 @@ namespace SGUI
 	class RootWidget : public Widget
 	{
 	public:
-		RootWidget() { mTimer.Initialize(); SDL_StartTextInput();}
-		~RootWidget() { SDL_StopTextInput();}
-
-		virtual void Initialise(Renderer& renderer)
-		{
-			Widget::performLayout(renderer);
+		RootWidget() 
+		{ 
+			mTimer.Initialize(); 
+			SDL_StartTextInput();
+			setTheme(new Theme());
 		}
+		~RootWidget() { SDL_StopTextInput();}
 
 		virtual void Render(Renderer& renderer, Point& offset) override
 		{
@@ -133,9 +134,6 @@ namespace SGUI
 			static int tipFontSize = 15;
 			static int tooltipWidth = 150;
 
-			Point pos = mFocusWidget->absolutePosition() +
-				Point(mFocusWidget->width() / 2, mFocusWidget->height() + 10);
-
 			// Increase alpha with time so tooltip fades in
 			Uint8 alpha = static_cast<Uint8>(255*std::min(1.0, 2 * (elapsed - 0.5f)) * 0.8);
 
@@ -144,7 +142,7 @@ namespace SGUI
 			if (mTooltipText.NeedsCreation())
 			{
 				// Create texture, TODO make it wrap to toolTipwidth
-				mTooltipText.Create(renderer, "Boku2-Regular.otf", tipFontSize, Color(255, 255));
+				mTooltipText.Create(renderer, mTheme->mFontNormal, tipFontSize, Color(255, 255));
 			}
 
 			// TODO Draw triangle pointing to widget
@@ -155,7 +153,10 @@ namespace SGUI
 // 			nvgFill(mNVGContext);
 
 			int halfwidth = mTooltipText.getWidth() / 2;
-			Rect tooltipRect{ pos.x - 4 - halfwidth, pos.y - 4, mTooltipText.getWidth() + 8, mTooltipText.getHeight() + 8 };
+			Point pos = mFocusWidget->absolutePosition() +
+				Point(mFocusWidget->width() / 2 - halfwidth, mFocusWidget->height() + 10);
+
+			Rect tooltipRect{ pos.x - 4 , pos.y - 4, mTooltipText.getWidth() + 8, mTooltipText.getHeight() + 8 };
 
 			renderer.FillRect(tooltipRect, Color(0, alpha));
 			renderer.OutlineRect(tooltipRect, Color(5, alpha));

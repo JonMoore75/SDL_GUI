@@ -71,6 +71,7 @@ public:
 		textBox->setAlignment(SGUI::TextBox::Alignment::Right);
 		textBox->setEditable(true);
 
+		// Sets default theme and performs the layout
 		mGUI.performLayout(m_pWnd->GetRenderer());
 
 		return true; 

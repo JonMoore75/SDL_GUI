@@ -6,11 +6,12 @@
 #include "Renderer.h"
 #include "GUIRootWidget.h"
 #include "GUILayout.h"
+#include "GUITheme.h"
 
 namespace SGUI
 {
 
-	Widget::Widget(Widget* parent) : mParent(nullptr)
+	Widget::Widget(Widget* parent) : mParent{ nullptr }, mTheme{ nullptr }, mLayout{ nullptr }
 	{
 		if (parent)
 			parent->addChild(this);
@@ -28,9 +29,18 @@ namespace SGUI
 		}
 	}
 
-	void Widget::setLayout(Layout* layout)
+	void Widget::setTheme(Theme* theme)
 	{
-		mLayout.reset(layout);
+		if (mTheme.get() == theme)
+			return;
+		mTheme = theme;
+		for (auto child : mChildren)
+			child->setTheme(theme);
+	}
+
+	int Widget::fontSize() const
+	{
+		return (mFontSize < 0 && mTheme) ? mTheme->mStandardFontSize : mFontSize;
 	}
 
 	void Widget::addChild(int index, Widget* widget)
@@ -39,6 +49,7 @@ namespace SGUI
 		mChildren.insert(mChildren.begin() + index, std::move(widget));
 		widget->incRef();
 		widget->setParent(this);
+		widget->setTheme(mTheme);
 	}
 
 	void Widget::addChild(Widget* widget)
@@ -119,6 +130,8 @@ namespace SGUI
 		if (root)
 			root->updateFocus(this);
 	}
+
+
 
 	void Widget::Render(Renderer& renderer, Point& offset)
 	{

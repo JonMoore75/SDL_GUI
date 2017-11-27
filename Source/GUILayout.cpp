@@ -1,7 +1,9 @@
 #include "GUILayout.h"
 
 #include <algorithm>
+#include <assert.h>
 #include "GUIWindow.h"
+#include "GUITheme.h"
 #include "GUILabel.h"
 
 namespace SGUI
@@ -12,8 +14,9 @@ namespace SGUI
 		int width = 2 * mMargin;
 
 		const Window* window = dynamic_cast<const Window*>(widget);
+		assert( window->theme() );
 		if (window && !window->title().empty())
-			height += window->mWindowHeaderHeight - mMargin / 2;
+			height += window->theme()->mWindowHeaderHeight - mMargin / 2;
 
 		bool first = true, indent = false;
 		for (auto& c : widget->children()) 
@@ -50,7 +53,7 @@ namespace SGUI
 
 		const Window* window = dynamic_cast<const Window*>(widget);
 		if (window && !window->title().empty())
-			height += window->mWindowHeaderHeight - mMargin / 2;
+			height += window->theme()->mWindowHeaderHeight - mMargin / 2;
 
 		bool first = true, indent = false;
 		for (auto& c : widget->children()) 

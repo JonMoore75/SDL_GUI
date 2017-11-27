@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "Renderer.h"
+#include "GUITheme.h"
 
 std::string GetClipboardText()
 {
@@ -39,6 +40,8 @@ mSelectionPos(-1),
 mLastClick(0)
 {
 	mTimer.Initialize();
+	if (mTheme) 
+		mFontSize = mTheme->mTextBoxFontSize;
 }
 
 void SGUI::TextBox::updateCursor(int posx, SDL_Keymod modifiers)
@@ -60,6 +63,13 @@ void SGUI::TextBox::updateCursor(int posx, SDL_Keymod modifiers)
 
 	if (mCursorPos == mSelectionPos)
 		mSelectionPos = -1;
+}
+
+void SGUI::TextBox::setTheme(Theme* theme)
+{
+	Widget::setTheme(theme);
+	if (mTheme)
+		mFontSize = mTheme->mTextBoxFontSize;
 }
 
 bool SGUI::TextBox::mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers)
@@ -308,11 +318,11 @@ bool SGUI::TextBox::keyboardCharacterEvent(const std::string& codepoint)
 
 void SGUI::TextBox::PreRenderText(Renderer& renderer)
 {
-	SGUI::Color mTextColor{ 255, 160 }; 
+	SGUI::Color textColor = mEnabled ? mTheme->mTextColor : mTheme->mDisabledTextColor;
 
 	// Render text to a texture
 	FontTTF mFont;
-	mFont.LoadFont("Boku2-Regular.otf", fontSize(), mTextColor);
+	mFont.LoadFont(mTheme->mFontNormal.c_str(), fontSize(), textColor);
 	if (mValue.size())
 		mImageText.CreateFromText(renderer, mValue, mFont);
 	else
@@ -435,7 +445,8 @@ void SGUI::TextBox::CalculateInitialTextOffset()
 {
 	// Find the size of the rendered text and store width and height
 	// uses the SizeUTF8 function which sizes without rendering
-	Point textSize = TextBounds("Boku2-Regular.otf", mFontSize, mValue);
+	assert(mTheme);
+	Point textSize = TextBounds(mTheme->mFontNormal, mFontSize, mValue);
 
 	// x coord
 	switch (mAlignment)
@@ -566,11 +577,18 @@ SGUI::Point SGUI::TextBox::preferredSize(Renderer& renderer) const
 	}
 	float sw = (mSpinnable) ? 14.f : 0;
 
-	Point size = TextBounds("Boku2-Regular.otf", mFontSize, mValue);
+	Point size = TextBounds(mTheme->mFontNormal, mFontSize, mValue);
 
 	size.y = static_cast<int>(size.y * 1.4f);
  	size.x = size.y + size.x + static_cast<int>(uw) + static_cast<int>(sw);
 	return size;
+}
+
+void SGUI::TextBox::setEnabled(bool enabled)
+{
+	if (enabled != mEnabled)
+		mRedrawText = true;
+	SGUI::Widget::setEnabled(enabled);
 }
 
 bool SGUI::TextBox::checkFormat(const std::string& input, const std::string& format)

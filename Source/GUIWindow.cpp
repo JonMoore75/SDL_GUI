@@ -5,6 +5,7 @@
 
 #include "Renderer.h"
 #include "GUIRootWidget.h"
+#include "GUITheme.h"
 
 namespace SGUI
 {
@@ -21,28 +22,22 @@ namespace SGUI
 		Rect rect{ Point{0,0}, mSize };
 // 		Rect shadowRect{ Point{ 0,0 } - shadowOffset, mSize + shadowOffset };
 // 		renderer.FillRect(shadowRect, Color{0,30});
-		renderer.FillRect(rect, mMouseFocus ?mWindowFillFocused : mWindowFillUnfocused);
+		renderer.FillRect(rect, mMouseFocus ? mTheme->mWindowFillFocused : mTheme->mWindowFillUnfocused);
 
 		/* Draw header */
 		if (!mTitle.GetText().empty())
 		{
-			int hh = mWindowHeaderHeight;
-			Color mWindowHeaderGradientTop{ 74, 255 };
-			Color mWindowHeaderSepTop{ 92, 255 };
-			Color mWindowHeaderSepBot{ 29, 255 };
-			Color mDropShadow{ 0, 128 };
-			Color mWindowTitleUnfocused{ 220, 160 };
-			Color mWindowTitleFocused{ 255, 190 };
+			int hh = mTheme->mWindowHeaderHeight;
 
 			Rect headerRect{ Point{ 0,0 }, Point{mSize.x, hh} };
 
-			renderer.FillRect(headerRect, mWindowHeaderGradientTop);
-			renderer.Line(0, 0, mSize.x, 0, mWindowHeaderSepTop);
-			renderer.Line(0, hh-1, mSize.x, hh-1, mWindowHeaderSepBot);
+			renderer.FillRect(headerRect, mTheme->mWindowHeaderGradientTop);
+			renderer.Line(0, 0, mSize.x, 0, mTheme->mWindowHeaderSepTop);
+			renderer.Line(0, hh-1, mSize.x, hh-1, mTheme->mWindowHeaderSepBot);
 
 			if (mTitle.NeedsCreation())
 			{
-				mTitle.Create(renderer, "Boku2-Regular.otf", 18, mWindowTitleUnfocused);
+				mTitle.Create(renderer, mTheme->mFontNormal, 18, mTheme->mWindowTitleUnfocused);
 				mTitle.TextAlign(TextObject::CLIPCENTRE, Point{ mSize.x, hh });
 			}
 
@@ -55,7 +50,7 @@ namespace SGUI
 	SGUI::Point Window::preferredSize(Renderer& renderer) const
 	{
 		Point result = Widget::preferredSize(renderer);
-		Point textBounds = TextBounds("Boku2-Regular.otf", 18, mTitle.GetText());
+		Point textBounds = TextBounds(mTheme->mFontNormal, 18, mTitle.GetText());
 
 		result.x = std::max(result.x, textBounds.x + 20);
 		result.y = std::max(result.y, textBounds.y);
@@ -83,7 +78,7 @@ namespace SGUI
 			return true;
 		if (button == MouseBut::LEFT) 
 		{
-			mDrag = down && (p.y - mPos.y) < mWindowHeaderHeight;
+			mDrag = down && (p.y - mPos.y) < mTheme->mWindowHeaderHeight;
 			return true;
 		}
 		return false;

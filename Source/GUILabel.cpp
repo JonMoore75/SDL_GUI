@@ -1,14 +1,30 @@
 #include "GUILabel.h"
 
+#include "GUITheme.h"
+
 namespace SGUI
 {
 	Label::Label(Widget* parent, const std::string& caption, int fontSize /*= -1*/)
 		: Widget{ parent }, mCaption{ caption }, mColor{ 255, 160 }
 	{
-		if (fontSize >= 0)
+		if (mTheme) 
+		{
+			mFontSize = mTheme->mStandardFontSize;
+			mColor = mTheme->mTextColor;
+		}
+		if (fontSize >= 0) 
 			mFontSize = fontSize;
-		else
-			mFontSize = 16;
+	}
+
+
+	void Label::setTheme(Theme* theme)
+	{
+		Widget::setTheme(theme);
+		if (mTheme) 
+		{
+			mFontSize = mTheme->mStandardFontSize;
+			mColor = mTheme->mTextColor;
+		}
 	}
 
 
@@ -17,7 +33,7 @@ namespace SGUI
 		if (mCaption.GetText() == "")
 			return Point{ 0,0 };
 
-		Point textBounds = TextBounds("Boku2-Regular.otf", mFontSize, mCaption.GetText());
+		Point textBounds = TextBounds(mTheme->mFontNormal, mFontSize, mCaption.GetText());
 
 		// If we need to split label over multiple lines
 		if (mFixedSize.x > 0) 
@@ -31,7 +47,7 @@ namespace SGUI
 	{
 		if (mCaption.NeedsCreation())
 		{
-			mCaption.Create(renderer, "Boku2-Regular.otf", mFontSize, mColor);
+			mCaption.Create(renderer, mTheme->mFontNormal, mFontSize, mColor);
 			mCaption.TextAlign(TextObject::CLIPALIGN::CLIPLEFT);
 			// TODO split text if mFixedSize.x > 0
 		}

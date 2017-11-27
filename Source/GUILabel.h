@@ -17,18 +17,13 @@ namespace SGUI
 		/// Set the label's text caption
 		void setCaption(const std::string& caption) { mCaption = caption; }
 
-// 		/// Set the currently active font (2 are available by default: 'sans' and 'sans-bold')
-// 		void setFont(const std::string& font) { mFont = font; }
-// 		/// Get the currently active font
-// 		const std::string& font() const { return mFont; }
-
 		/// Get the label color
 		Color color() const { return mColor; }
 		/// Set the label color
 		void setColor(const Color& color) { mColor = color; }
 
-// 		/// Set the \ref Theme used to draw this widget
-// 		virtual void setTheme(Theme *theme) override;
+		/// Set the \ref Theme used to draw this widget
+		virtual void setTheme(Theme* theme) override;
 
 		/// Compute the size needed to fully display the label
 		virtual Point preferredSize(Renderer& renderer) const override;
@@ -40,7 +35,6 @@ namespace SGUI
 // 		virtual bool load(Serializer &s) override;
 	protected:
 		TextObject mCaption;
-//		std::string mFont;
 		Color mColor;
 	};
 }
