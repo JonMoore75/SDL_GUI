@@ -5,6 +5,8 @@
 #include <string>
 #include <SDL_ttf.h>
 
+#include "SDL_TTF_utf8wrapsize.h"
+
 class FontTTF
 {
 public:
@@ -20,8 +22,9 @@ public:
 
 	int GetHeight() const { return m_height; }
 	int GetAscent() const { return m_ascent; }
+	int GetLineSkip() const { return m_lineskip; }
 
-	int SizeUTF8(const std::string& text, int& w, int& h) const;
+	int SizeUTF8(const std::string& text, int& w, int& h, Uint32 wrapLength=0) const;
 
 	TTF_Font* GetFontPtr() const noexcept { return m_pFont; }
 	const SDL_Color& GetColor() const noexcept { return m_textColor; }
@@ -31,6 +34,7 @@ private:
 	int m_ptsize = 0;
 	int m_height = 0;
 	int m_ascent = 0;
+	int m_lineskip = 0;
 	SDL_Color m_textColor = { 0x00, 0x00, 0x00, 0x00 };
 };
 

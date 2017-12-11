@@ -33,11 +33,8 @@ namespace SGUI
 		if (mCaption.GetText() == "")
 			return Point{ 0,0 };
 
-		Point textBounds = TextBounds(mTheme->mFontNormal, mFontSize, mCaption.GetText());
-
-		// If we need to split label over multiple lines
-		if (mFixedSize.x > 0) 
-			return Point{ mFixedSize.x, textBounds.y }; // TODO split text
+		// Find text bounds, wrapping text over multiple lines if width would otherwise > mFixedSize.x
+		Point textBounds = TextBounds(mTheme->mFontNormal, mFontSize, mCaption.GetText(), mFixedSize.x);
 
 		textBounds.x += 2;
 		return textBounds;
@@ -47,9 +44,10 @@ namespace SGUI
 	{
 		if (mCaption.NeedsCreation())
 		{
-			mCaption.Create(renderer, mTheme->mFontNormal, mFontSize, mColor);
-			mCaption.TextAlign(TextObject::CLIPALIGN::CLIPLEFT);
-			// TODO split text if mFixedSize.x > 0
+			// Text will be wrapped to mFixedSize.x if it is > 0
+			mCaption.Create(renderer, mTheme->mFontNormal, mFontSize, mColor, mFixedSize.x);
+
+			mCaption.TextAlign(TextObject::CLIPLEFT);
 		}
 		mCaption.Render(renderer);
 	}

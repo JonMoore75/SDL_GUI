@@ -4,6 +4,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 #include <SDL.h>
 
 class Renderer;
@@ -29,8 +30,10 @@ public:
 
 	bool CreateFromFile(Renderer& renderer, std::string filename);
 
-	bool CreateFromText(Renderer& renderer, std::string text, FontTTF& font);
-	bool CreateFromText_Fast(Renderer& renderer, std::string text, FontTTF& font);
+	bool CreateFromText(Renderer& renderer, std::string text, FontTTF& font, int wrapLength=0);
+//	bool CreateFromTextWrapped(Renderer& renderer, std::string text, FontTTF& font, int wrapLength);
+
+	bool CreateFromText_Fast(Renderer& renderer, std::string text, FontTTF& font, int wrapLength=0);
 
 	bool CreateFromSurface(SDL_Surface* textSurface, Renderer &renderer);
 

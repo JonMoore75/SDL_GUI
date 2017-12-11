@@ -27,6 +27,7 @@ bool FontTTF::LoadFont(const char* file, int ptsize, SDL_Color textColor)
 	m_textColor = textColor;
 	m_height = TTF_FontHeight(m_pFont);
 	m_ascent = TTF_FontAscent(m_pFont);
+	m_lineskip = TTF_FontLineSkip(m_pFont);
 	return true;
 }
 
@@ -37,9 +38,12 @@ void FontTTF::Release()
 	m_ptsize = 0;
 }
 
-int FontTTF::SizeUTF8(const std::string& text, int& w, int& h) const
+int FontTTF::SizeUTF8(const std::string& text, int& w, int& h, Uint32 wrapLength/* = 0*/) const
 {
 	// Returns: 0 on success with the ints pointed to by w and h set as appropriate, 
-	// if they are not NULL. -1 is returned on errors, such as a glyph in the string not being found. 
-	return TTF_SizeUTF8(m_pFont, text.c_str(), &w, &h);
+	// if they are not NULL. -1 is returned on errors, such as a glyph in the string not being found.
+	if (wrapLength > 0)
+		return TTF_SizeUTF8_Wrapped(m_pFont, text.c_str(), &w, &h, wrapLength);
+	else
+		return TTF_SizeUTF8(m_pFont, text.c_str(), &w, &h);
 }

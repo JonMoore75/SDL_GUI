@@ -86,7 +86,7 @@ SGUI::Rect operator+(const SGUI::Rect& lhs, const SGUI::Point& rhs);
 bool PointinRect(const SGUI::Point& point, const SGUI::Rect& rect);
 bool PointinRect(int x, int y, const SGUI::Rect& rect);
 
-SGUI::Point TextBounds(const std::string& fontName, int fontSize, const std::string& text);
+SGUI::Point TextBounds(const std::string& fontName, int fontSize, const std::string& text, Uint32 wrapLength=0);
 
 #endif // GUICommon_h__
 

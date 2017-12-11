@@ -75,7 +75,7 @@ bool Texture::CreateFromFile(Renderer& renderer, std::string filename)
 }
 
 
-bool Texture::CreateFromText(Renderer& renderer, std::string text, FontTTF& font)
+bool Texture::CreateFromText(Renderer& renderer, std::string text, FontTTF& font, int wrapLength/* = 0*/)
 {
 	if (!font.GetFontPtr())
 	{
@@ -83,12 +83,14 @@ bool Texture::CreateFromText(Renderer& renderer, std::string text, FontTTF& font
 		return false;
 	}
 
-	SDL_Surface* textSurface = TTF_RenderUTF8_Blended(font.GetFontPtr(), text.c_str(), font.GetColor());
+	SDL_Surface* textSurface = (wrapLength > 0) ? 
+		TTF_RenderUTF8_Blended_Wrapped(font.GetFontPtr(), text.c_str(), font.GetColor(), wrapLength)
+		: TTF_RenderUTF8_Blended(font.GetFontPtr(), text.c_str(), font.GetColor());
 
 	return CreateFromSurface(textSurface, renderer);
 }
 
-bool Texture::CreateFromText_Fast(Renderer& renderer, std::string text, FontTTF& font)
+bool Texture::CreateFromText_Fast(Renderer& renderer, std::string text, FontTTF& font, int wrapLength/* = 0*/)
 {
 	if (!font.GetFontPtr())
 	{
