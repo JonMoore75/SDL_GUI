@@ -13,7 +13,7 @@ namespace SGUI
 	public:
 		friend class GroupLayout;
 		Window(Widget* parent, const std::string& title = "Untitled") : Widget{ parent }, mTitle{ title } {}
-		Window(Widget* parent, const SGUI::Point& pos, const SGUI::Point& size, const std::string& title = "Untitled");
+		Window(Widget* parent, const Point& pos, const Point& size, const std::string& title = "Untitled");
 		virtual ~Window() { CleanUp(); }
 
 		void CleanUp() {}
@@ -35,19 +35,19 @@ namespace SGUI
 		/// Accept scroll events and propagate them to the widget under the mouse cursor
 		virtual bool scrollEvent(const  Point& p, const  Point& rel) override;
 
-//		void SetBackgroundColor(const SGUI::Color& col) { mBackgrdColor = col; }
+//		void SetBackgroundColor(const Color& col) { mBackgrdColor = col; }
 
 		void Render(Renderer& renderer, Point& offset) override;
 
 		Point preferredSize(Renderer& renderer) const override;
 
 	private:
-// 		SGUI::Color mWindowFillUnfocused{43, 230};
-// 		SGUI::Color mWindowFillFocused{45, 230};
-// 		SGUI::Color mWindowTitleUnfocused{220, 160};
-// 		SGUI::Color mWindowTitleFocused{ 255, 190 };
-// 		SGUI::Color mBackgrdColor{ 255, 255 };
-// 		SGUI::Color mEdgeColor = { 0, 0, 255, 255 };
+// 		Color mWindowFillUnfocused{43, 230};
+// 		Color mWindowFillFocused{45, 230};
+// 		Color mWindowTitleUnfocused{220, 160};
+// 		Color mWindowTitleFocused{ 255, 190 };
+// 		Color mBackgrdColor{ 255, 255 };
+// 		Color mEdgeColor = { 0, 0, 255, 255 };
 
 		int mEdge = 2;
 

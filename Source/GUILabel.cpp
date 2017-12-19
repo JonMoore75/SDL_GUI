@@ -28,7 +28,7 @@ namespace SGUI
 	}
 
 
-	SGUI::Point Label::preferredSize(Renderer& renderer) const
+	Point Label::preferredSize(Renderer& renderer) const
 	{
 		if (mCaption.GetText() == "")
 			return Point{ 0,0 };

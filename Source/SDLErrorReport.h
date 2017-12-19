@@ -5,6 +5,6 @@
 #include <string>
 #include <SDL.h>
 
-void Error2MsgBox(std::string err_msg);
+void MsgBoxErrorReport(std::string err_msg, std::string err_msg2);
 
 #endif // SDLErrorReport_h__

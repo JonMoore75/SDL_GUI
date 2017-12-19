@@ -82,7 +82,7 @@ bool GameApp::Init(WindowCreationParams& createParam, std::string initial_state)
 	// Initialise SDL, report error if it fails
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
-		Error2MsgBox("SDL Initialisation Failed!\n");
+		MsgBoxErrorReport("SDL Initialisation Failed!\n", SDL_GetError());
 		return false;
 	}
 
@@ -90,27 +90,21 @@ bool GameApp::Init(WindowCreationParams& createParam, std::string initial_state)
 	int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
 	if (!(IMG_Init(imgFlags) & imgFlags))
 	{
-		std::string err_msg = "SDL_image could not initialize!\n";
-		err_msg += IMG_GetError();
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", err_msg.c_str(), nullptr);
+		MsgBoxErrorReport("SDL_image could not initialize!\n", IMG_GetError());
 		return false;
 	}
 
 	//Initialize SDL_ttf 
 	if (TTF_Init() == -1)
 	{
-		std::string err_msg = "SDL_ttf could not initialize!\n";
-		err_msg += TTF_GetError();
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", err_msg.c_str(), nullptr);
+		MsgBoxErrorReport("SDL_ttf could not initialize!\n", TTF_GetError());
 		return false;
 	}
 
 	//Initialize SDL_mixer 
 	if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) 
 	{ 
-		std::string err_msg = "SDL_mixer could not initialize!\n";
-		err_msg += Mix_GetError();
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", err_msg.c_str(), nullptr);
+		MsgBoxErrorReport("SDL_mixer could not initialize!\n", Mix_GetError());
 		return false; 
 	}
 
@@ -121,14 +115,14 @@ bool GameApp::Init(WindowCreationParams& createParam, std::string initial_state)
 		createParam.iWidth, createParam.iHeight,
 		createParam.SetWindowCreateFlags()))
 	{
-		Error2MsgBox("Window Creation Failed.\n");
+		MsgBoxErrorReport("Window Creation Failed.\n", SDL_GetError());
 		return false;
 	}
 
 	// Creates a renderer and clears the window
 	if (!m_Window.CreateRenderer( createParam.SetRendererCreateFlags() ))
 	{
-		Error2MsgBox("Renderer Creation Failed.\n");
+		MsgBoxErrorReport("Renderer Creation Failed.\n", SDL_GetError());
 		return false;
 	}
 
@@ -168,7 +162,7 @@ void GameApp::HandleEvents()
 		// If the window handled the event the return else pas to the state
 		if (Event.type == SDL_WINDOWEVENT && Event.window.windowID == m_Window.GetID())
 			if (m_Window.OnEvent(Event))
-				return;
+				continue;
 
 		m_pState->OnEvent(Event);
 	}
@@ -189,7 +183,7 @@ void GameApp::MainLoop()
 			// Gets time since last frame
 			double deltaTime = m_Timer.GetDeltaTime();
 
-			std::string new_state = m_pState->ExtractNextState();
+			std::string new_state = m_pState->CheckIfChangetoNewState();
 
 			if (!new_state.empty())
 			{

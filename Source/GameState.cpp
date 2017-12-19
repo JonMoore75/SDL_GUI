@@ -64,7 +64,7 @@ GameState::QUITRESPONSE GameState::TwoOptionQuitDialog()
 	return GameState::CANCEL;
 }
 
-std::string GameState::ExtractNextState()
+std::string GameState::CheckIfChangetoNewState()
 {
 
 	std::string newState = m_newState;

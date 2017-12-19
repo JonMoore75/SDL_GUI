@@ -8,7 +8,7 @@
 
 namespace SGUI
 {
-	SGUI::Point GroupLayout::preferredSize(Renderer& renderer, const Widget* widget) const
+	Point GroupLayout::preferredSize(Renderer& renderer, const Widget* widget) const
 	{
 		int height = mMargin;
 		int width = 2 * mMargin;

@@ -8,7 +8,7 @@
 #include "Texture.h"
 #include "Font_TTF.h"
 
-#include "GUICommon.h"
+#include "Common.h"
 
 
 void StringBreaker(const std::string& str, int maxwidth, std::vector<std::string>& rows, std::function<int(const std::string&)> widthFunc);
@@ -28,26 +28,26 @@ public:
 
 	void SetAlpha(Uint8 alpha)	{ mTextTexture.SetAlpha(alpha); }
 
-	SGUI::Point getSize() const { return SGUI::Point{ mTextTexture.GetWidth(), mTextTexture.GetHeight() }; }
+	Point getSize() const { return Point{ mTextTexture.GetWidth(), mTextTexture.GetHeight() }; }
 	int getWidth() const		{ return mTextTexture.GetWidth(); }
 	int getHeight() const		{ return mTextTexture.GetHeight(); }
 
 	bool NeedsCreation() const	{ return !mText.empty() && mTextTexture.isNull(); }
 
-	void Create(Renderer& renderer, const std::string& font, int fontSize, SGUI::Color color, int maxWidth = 0);
+	void Create(Renderer& renderer, const std::string& font, int fontSize, Color color, int maxWidth = 0);
 
-	void TextAlign(CLIPALIGN align, const SGUI::Point& trgtSize = SGUI::Point{ 0, 0 });
+	void TextAlign(CLIPALIGN align, const Point& trgtSize = Point{ 0, 0 });
 
 	// Pass in the target position ie point to centre around if centre aligned
 	// If defined by target rect then pass in the top left point of target rect
-	void Render(Renderer& renderer, SGUI::Point pt = { 0,0 })
+	void Render(Renderer& renderer, Point pt = { 0,0 })
 	{
 		mTextTexture.Render(renderer, pt.x + mOffset.x, pt.y + mOffset.y);
 	}
 
 private:
 	Texture mTextTexture;
-	SGUI::Point mOffset;
+	Point mOffset;
 	std::string mText;
 };
 

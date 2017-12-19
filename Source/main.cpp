@@ -15,13 +15,13 @@
 #include "GUILayout.h"
 #include "GUILabel.h"
 
-// SGUI::Point GetFontTextSize(FontTTF& font, std::string str1, std::string str2)
+// Point GetFontTextSize(FontTTF& font, std::string str1, std::string str2)
 // {
 // 	int width, height;
 // 
 // 	std::string joint = str1 + str2;
 // 	TTF_SizeUTF8(font.GetFontPtr(), joint.c_str(), &width, &height);
-// 	return SGUI::Point{ width, height};
+// 	return Point{ width, height};
 // }
 
 class GUIState : public GameState
@@ -33,10 +33,10 @@ public:
 	bool Initialise() override
 	{
 		// Tell root Widget the screen / physical window size
-		mGUI.setSize(SGUI::Point{ m_pWnd->GetWidth(), m_pWnd->GetHeight() });
+		mGUI.setSize(Point{ m_pWnd->GetWidth(), m_pWnd->GetHeight() });
 
-		SGUI::Point winPos{ m_pWnd->GetWidth() / 3, m_pWnd->GetHeight() / 3 };
-		SGUI::Point winSize{ m_pWnd->GetWidth() / 3, m_pWnd->GetHeight() / 3 };
+		Point winPos{ m_pWnd->GetWidth() / 3, m_pWnd->GetHeight() / 3 };
+		Point winSize{ m_pWnd->GetWidth() / 3, m_pWnd->GetHeight() / 3 };
 		auto pWin = new SGUI::Window(&mGUI, winPos, winSize);
 		assert(pWin);
 		pWin->setLayout(new SGUI::GroupLayout());
@@ -90,7 +90,7 @@ public:
 
 	void Render(Renderer& renderer)	override
 	{
-		mGUI.Render(renderer, SGUI::Point{ 0,0 });
+		mGUI.Render(renderer, Point{ 0,0 });
 	}
 
 	void CleanUp() override {}
@@ -112,15 +112,15 @@ public:
 
 	bool OnLButtonDown(int mX, int mY) override
 	{ 
-		return mGUI.mouseButtonEvent(SGUI::Point(mX, mY), SGUI::MouseBut::LEFT, true, SDL_GetModState());
+		return mGUI.mouseButtonEvent(Point(mX, mY), SGUI::MouseBut::LEFT, true, SDL_GetModState());
 	}
 	bool OnLButtonUp(int mX, int mY) override 
 	{ 
-		return mGUI.mouseButtonEvent(SGUI::Point(mX, mY), SGUI::MouseBut::LEFT, false, SDL_GetModState());
+		return mGUI.mouseButtonEvent(Point(mX, mY), SGUI::MouseBut::LEFT, false, SDL_GetModState());
 	}
 	bool OnMouseMove(int mX, int mY, int relX, int relY, bool Left, bool Right, bool Middle) override 
 	{ 
-		return mGUI.mouseMotionEvent(SGUI::Point(mX, mY), SGUI::Point(relX, relY), SGUI::MouseButStatus(Left, Middle, Right), SDL_GetModState());
+		return mGUI.mouseMotionEvent(Point(mX, mY), Point(relX, relY), SGUI::MouseButStatus(Left, Middle, Right), SDL_GetModState());
 	}
 
 private:

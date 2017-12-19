@@ -91,7 +91,7 @@ namespace SGUI
 		return contains(p) ? this : nullptr;
 	}
 
-	SGUI::Point Widget::preferredSize(Renderer& renderer) const
+	Point Widget::preferredSize(Renderer& renderer) const
 	{
 		if (mLayout)
 			return mLayout->preferredSize(renderer, this);
@@ -143,7 +143,7 @@ namespace SGUI
 			if (child->visible()) 
 			{
 				SDL_Rect oldViewport = renderer.GetViewport();
- 				renderer.SetViewport(SGUI::Rect{ child->mPos + newOffset, child->mSize });
+ 				renderer.SetViewport(Rect{ child->mPos + newOffset, child->mSize });
 				child->Render(renderer, newOffset);
 				renderer.SetViewport(oldViewport);
 			}

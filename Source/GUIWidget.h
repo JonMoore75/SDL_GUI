@@ -5,7 +5,7 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "GUICommon.h"
+#include "Common.h"
 #include "GUIObject.h"
 
 namespace SGUI
@@ -114,7 +114,7 @@ namespace SGUI
 		/// Set the fixed height (see \ref setFixedSize())
 		void setFixedHeight(int height) { mFixedSize.y = height; }
 
-		SGUI::Rect GetRect() const { return SGUI::Rect{mPos, mSize}; }
+		Rect GetRect() const { return Rect{mPos, mSize}; }
 
 
 		/// Return whether or not the widget is currently visible (assuming all parents are visible)
@@ -266,9 +266,9 @@ namespace SGUI
 		Widget*			mParent{ nullptr };
 		std::string		mId;
 		std::string		mTooltip;
-		SGUI::Point		mPos; 
-		SGUI::Point		mSize;
-		SGUI::Point		mFixedSize;
+		Point		mPos; 
+		Point		mSize;
+		Point		mFixedSize;
 		int				mFontSize{ 15 };
 		bool mVisible{ true }; 
 		bool mEnabled{ true };

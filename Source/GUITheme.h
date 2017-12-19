@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GUICommon.h"
+#include "Common.h"
 #include "GUIObject.h"
 
 class Renderer;

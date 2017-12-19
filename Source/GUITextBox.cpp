@@ -318,7 +318,7 @@ bool SGUI::TextBox::keyboardCharacterEvent(const std::string& codepoint)
 
 void SGUI::TextBox::PreRenderText(Renderer& renderer)
 {
-	SGUI::Color textColor = mEnabled ? mTheme->mTextColor : mTheme->mDisabledTextColor;
+	Color textColor = mEnabled ? mTheme->mTextColor : mTheme->mDisabledTextColor;
 
 	// Render text to a texture
 	FontTTF mFont;
@@ -352,7 +352,7 @@ void SGUI::TextBox::CalculateTextClipRect()
 	int clipWidth = static_cast<int>(mSize.x - unitWidth - spinArrowsWidth - 2 * xSpacing + 2.0f);
 	int clipHeight = static_cast<int>(mSize.y - 3.0f);
 
-	mTextClipRect = SGUI::Rect{ clipX, clipY, clipWidth, clipHeight };
+	mTextClipRect = Rect{ clipX, clipY, clipWidth, clipHeight };
 }
 
 
@@ -561,7 +561,7 @@ void SGUI::TextBox::Render(Renderer& renderer, Point& offset)
 	// 			}
 }
 
-SGUI::Point SGUI::TextBox::preferredSize(Renderer& renderer) const
+Point SGUI::TextBox::preferredSize(Renderer& renderer) const
 {
 	float uw = 0;
 	if (mUnitsImage > 0) 

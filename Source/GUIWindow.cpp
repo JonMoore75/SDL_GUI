@@ -9,7 +9,7 @@
 
 namespace SGUI
 {
-	Window::Window(Widget* parent, const SGUI::Point& pos, const SGUI::Point& size, const std::string& title /*= "Untitled"*/)
+	Window::Window(Widget* parent, const Point& pos, const Point& size, const std::string& title /*= "Untitled"*/)
 		: Widget{ parent }, mTitle{ title }
 	{
 		setPosition(pos);
@@ -47,7 +47,7 @@ namespace SGUI
 		Widget::Render(renderer, offset);
 	}
 
-	SGUI::Point Window::preferredSize(Renderer& renderer) const
+	Point Window::preferredSize(Renderer& renderer) const
 	{
 		Point result = Widget::preferredSize(renderer);
 		Point textBounds = TextBounds(mTheme->mFontNormal, 18, mTitle.GetText());

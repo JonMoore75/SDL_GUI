@@ -29,13 +29,14 @@ public:
 
 	void SetWindow(Window* pWnd) { m_pWnd = pWnd; }
 
-	std::string ExtractNextState();
+	std::string CheckIfChangetoNewState();
 
 protected:
 	void RequestAppQuit() const;
 
 	Window* m_pWnd = nullptr;
 
+	// Usually blank string, when not tells app to change game state
 	std::string m_newState;
 
 

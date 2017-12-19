@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GUICommon.h"
+#include "Common.h"
 class Renderer;
 
 namespace SGUI

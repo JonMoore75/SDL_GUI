@@ -44,7 +44,7 @@ bool Texture::Create(Renderer& renderer, Uint32 format, int access, int w, int h
 	m_pTexture = SDL_CreateTexture(renderer.GetPtr(), format, access, w, h);
 
 	if (m_pTexture == nullptr)
-		Error2MsgBox("Unable to create texture from surface!\n");
+		MsgBoxErrorReport("Unable to create texture from surface!\n", SDL_GetError());
 	else
 	{
 		//Get image dimensions 
@@ -65,7 +65,7 @@ bool Texture::CreateFromFile(Renderer& renderer, std::string filename)
 		// Failed to load from file
 		std::string err_msg = "Could not load texture from file.\n";
 		err_msg += filename + "\n";
-		Error2MsgBox(err_msg);
+		MsgBoxErrorReport(err_msg, SDL_GetError());
 		return false;
 	}
 	else
@@ -109,14 +109,14 @@ bool Texture::CreateFromSurface(SDL_Surface* textSurface, Renderer &renderer)
 
 	if (textSurface == nullptr)
 	{
-		Error2MsgBox("Tried to create texture from invalid surface.\n");
+		MsgBoxErrorReport("Tried to create texture from invalid surface.\n", SDL_GetError());
 		return false;
 	}
 
 	//Create texture from surface pixels 
 	m_pTexture = SDL_CreateTextureFromSurface(renderer.GetPtr(), textSurface);
 	if (m_pTexture == nullptr)
-		Error2MsgBox("Unable to create texture from surface!\n");
+		MsgBoxErrorReport("Unable to create texture from surface!\n", SDL_GetError());
 	else
 	{
 		//Get image dimensions 

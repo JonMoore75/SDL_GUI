@@ -48,7 +48,7 @@ void StringBreaker(const std::string& str, int maxwidth, std::vector<std::string
 	StringBreaker(std::string{ maxWidthIter, endIt }, maxwidth, rows, widthFunc);
 }
 
-void TextObject::Create(Renderer& renderer, const std::string& font, int fontSize, SGUI::Color color, int maxWidth/* = 0*/)
+void TextObject::Create(Renderer& renderer, const std::string& font, int fontSize, Color color, int maxWidth/* = 0*/)
 {
 	FontTTF fontTTF;
 	fontTTF.LoadFont(font.c_str(), fontSize, color);
@@ -59,9 +59,9 @@ void TextObject::Create(Renderer& renderer, const std::string& font, int fontSiz
 	mTextTexture.SetAlphaBlend();
 }
 
-void TextObject::TextAlign(CLIPALIGN align, const SGUI::Point& trgtSize /*= SGUI::Point{ 0, 0 }*/)
+void TextObject::TextAlign(CLIPALIGN align, const Point& trgtSize /*= Point{ 0, 0 }*/)
 {
-	SGUI::Point textSize{ mTextTexture.GetWidth(), mTextTexture.GetHeight() };
+	Point textSize{ mTextTexture.GetWidth(), mTextTexture.GetHeight() };
 
 	mOffset.x = trgtSize.x / 2 - textSize.x / 2;
 	mOffset.y = (trgtSize.y == 0) ? 0 : trgtSize.y / 2 - textSize.y / 2;

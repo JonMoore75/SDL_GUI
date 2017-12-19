@@ -5,7 +5,7 @@
 #include "GUIWidget.h"
 #include "TextObject.h"
 
-#include "GUICommon.h"
+#include "Common.h"
 
 class Renderer;
 

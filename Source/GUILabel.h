@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "GUICommon.h"
+#include "Common.h"
 #include "GUIWidget.h"
 #include "TextObject.h"
 
