@@ -22,9 +22,17 @@ public:
 	virtual void Update(double dt) = 0;
 	virtual void Render(Renderer& renderer) = 0;
 	virtual void CleanUp() = 0;
+
+	// Default behaviour is to just quit without checking with user
+	// If want user confirmation then override this to call ThreeOptionQuitDialog
+	// or TwoOptionQuitDialog
 	virtual QUITRESPONSE QuitDialog() { return QUIT; }
 
+	// This will give user option to return to menu, to quit to desktop or
+	// to cancel and carry on
 	QUITRESPONSE ThreeOptionQuitDialog(std::string new_state);
+
+	// Dialog asking user if really wants to quit
 	QUITRESPONSE TwoOptionQuitDialog();
 
 	void SetWindow(Window* pWnd) { m_pWnd = pWnd; }

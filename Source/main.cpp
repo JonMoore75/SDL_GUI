@@ -78,6 +78,8 @@ public:
 	};
 	void Update(double dt)			override {}
 
+	QUITRESPONSE QuitDialog() override { return TwoOptionQuitDialog(); }
+
 	void ButtonCallback() 
 	{
 		

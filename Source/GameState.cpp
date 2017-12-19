@@ -2,7 +2,7 @@
 
 
 
-GameState::QUITRESPONSE GameState::ThreeOptionQuitDialog(std::string new_state)
+GameState::QUITRESPONSE GameState::ThreeOptionQuitDialog(std::string menuStateID)
 {
 	int buttonid = -1;
 
@@ -27,7 +27,7 @@ GameState::QUITRESPONSE GameState::ThreeOptionQuitDialog(std::string new_state)
 	if (buttonid == 1)
 	{
 		// Return to main menu
-		m_newState = new_state;
+		m_newState = menuStateID;
 		return GameState::NEWSTATE;
 	}
 
