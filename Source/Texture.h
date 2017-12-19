@@ -5,7 +5,10 @@
 #include <string>
 #include <memory>
 #include <vector>
+
 #include <SDL.h>
+
+#include "Common.h"
 
 class Renderer;
 class FontTTF;
@@ -21,10 +24,10 @@ public:
 	bool isNull() const { return m_pTexture == nullptr; }
 
 	void Render(Renderer& renderer, int x, int y) const;
-	void RenderStretch(Renderer& renderer, SDL_Rect* pDestRect = nullptr) const;
+	void RenderStretch(Renderer& renderer, Rect* pDestRect = nullptr) const;
 
-	void SetClipRect(const SDL_Rect& rect) { m_ClipRect = rect; }
-	void SetDefaultClipRect() { m_ClipRect = SDL_Rect{0,0,m_Width,m_Height}; }
+	void SetClipRect(const Rect& rect) { m_ClipRect = rect; }
+	void SetDefaultClipRect() { m_ClipRect = Rect{0,0,m_Width,m_Height}; }
 
 	bool Create(Renderer& renderer, Uint32 format, int access, int w, int h);
 
@@ -45,7 +48,7 @@ public:
 
 private:
 	SDL_Texture*	m_pTexture = nullptr;
-	SDL_Rect		m_ClipRect{0,0,0,0};
+	Rect			m_ClipRect{0,0,0,0};
 	int m_Width = 0;
 	int m_Height = 0;
 };

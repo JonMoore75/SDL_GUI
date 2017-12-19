@@ -142,7 +142,7 @@ namespace SGUI
 		{
 			if (child->visible()) 
 			{
-				SDL_Rect oldViewport = renderer.GetViewport();
+				Rect oldViewport = renderer.GetViewport();
  				renderer.SetViewport(Rect{ child->mPos + newOffset, child->mSize });
 				child->Render(renderer, newOffset);
 				renderer.SetViewport(oldViewport);

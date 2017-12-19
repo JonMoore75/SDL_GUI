@@ -72,7 +72,7 @@ void TextObject::TextAlign(CLIPALIGN align, const Point& trgtSize /*= Point{ 0, 
 	if (align == CLIPRIGHT)
 		mOffset.x = trgtSize.x - textSize.x;
 
-	SDL_Rect clipRect{ 0, 0, textSize.x, textSize.y };
+	Rect clipRect{ 0, 0, textSize.x, textSize.y };
 
 	// If text bigger in x than target rect
 	if (trgtSize.x > 0 && mOffset.x < 0)

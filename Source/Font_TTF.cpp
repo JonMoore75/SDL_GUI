@@ -12,7 +12,7 @@ FontTTF::~FontTTF()
 	Release();
 }
 
-bool FontTTF::LoadFont(const char* file, int ptsize, SDL_Color textColor)
+bool FontTTF::LoadFont(const char* file, int ptsize, Color textColor)
 {
 	m_pFont = TTF_OpenFont(file, ptsize);
 

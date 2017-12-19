@@ -4,8 +4,10 @@
 #pragma once
 
 #include <SDL.h>
+#include "Common.h"
 
 class Texture;
+class Window;
 
 class Renderer
 {
@@ -19,12 +21,12 @@ public:
 		
 	void Present();
 
-	void SetViewport(const SDL_Rect& rect) { SDL_RenderSetViewport(m_pRenderer, &rect); }
+	void SetViewport(const Rect& rect) { SDL_RenderSetViewport(m_pRenderer, &rect); }
 	void SetViewportWholeScreen() { SDL_RenderSetViewport(m_pRenderer, nullptr); }
 
-	SDL_Rect GetViewport() const
+	Rect GetViewport() const
 	{ 
-		SDL_Rect retRect{0,0,0,0};
+		Rect retRect{0,0,0,0};
 		SDL_RenderGetViewport(m_pRenderer, &retRect); 
 		return retRect;
 	}
@@ -36,12 +38,12 @@ public:
 		SDL_SetRenderTarget(m_pRenderer, nullptr);
 	}
 		
-	bool Create(SDL_Window* pWindow, Uint32 flags = SDL_RENDERER_ACCELERATED, int index = -1);
+	bool Create(Window& window, Uint32 flags = SDL_RENDERER_ACCELERATED, int index = -1);
 
-	void FillRect(const SDL_Rect& rect, const SDL_Color& color);
-	void OutlineRect(const SDL_Rect& rect, const SDL_Color& color);
-	void Line(int x1, int y1, int x2, int y2, const SDL_Color& color);
-	void Point(int x, int y, const SDL_Color& color);
+	void FillRect(const Rect& rect, const Color& color);
+	void OutlineRect(const Rect& rect, const Color& color);
+	void Line(int x1, int y1, int x2, int y2, const Color& color);
+	void Point(int x, int y, const Color& color);
 
 	SDL_BlendMode SetRenderDrawMode(SDL_BlendMode blendMode)
 	{
@@ -56,7 +58,7 @@ public:
 		
 private:
 	SDL_Renderer* m_pRenderer = nullptr;
-	SDL_Color m_BackgroundColor = SDL_Color{ 0x00, 0x00, 0x00, 0xFF };
+	Color m_BackgroundColor = Color{ 0x00, 0x00, 0x00, 0xFF };
 };
 
 #endif _RENDERER_H_

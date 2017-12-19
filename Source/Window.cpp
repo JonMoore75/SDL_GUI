@@ -49,7 +49,7 @@ bool Window::Create(std::string title, int x, int y, int w, int h, Uint32 flags)
 
 bool Window::CreateRenderer(Uint32 iFlags /*= SDL_RENDERER_ACCELERATED*/)
 {
-	return m_Renderer.Create(m_pWindow, iFlags);
+	return m_Renderer.Create(*this, iFlags);
 }
 
 void Window::ClearWindow()

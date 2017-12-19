@@ -412,7 +412,7 @@ void SGUI::TextBox::RenderText(Renderer& renderer, Point& offset)
 		mRedrawText = false;
 	}
 
-	SDL_Rect oldViewport = renderer.GetViewport();
+	Rect oldViewport = renderer.GetViewport();
 	renderer.SetViewport(mTextClipRect + offset);
 
 	// Draw background for highlighted text
@@ -455,8 +455,8 @@ void SGUI::TextBox::CalculateInitialTextOffset()
 		mTextOffset.x = 0;
 		break;
 	case Alignment::Right:
-		// -1 at end make sure we always have room to draw cursor on right aligned 
-		// text boxes
+		// subtract 1 at end to make sure we always have room to draw cursor on right aligned 
+		// text boxes ie shifts left by 1 pixel
 		mTextOffset.x = static_cast<int>(mTextClipRect.w - textSize.x - 1);
 		break;
 	case Alignment::Center:
