@@ -3,6 +3,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 #include <SDL.h>
 
 class Renderer;
@@ -88,6 +89,10 @@ void StopUnicodeEvents();
 
 std::string GetClipboardText();
 bool SetClipboardText(const std::string& str);
+
+bool InitSDL();
+void ShutdownSDL();
+void MainLoop(std::function<bool(SDL_Event& Event)> OnEvent, std::function<void()> Render);
 
 using Keymod = SDL_Keymod;
 using Keycode = SDL_Keycode;

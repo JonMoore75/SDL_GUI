@@ -4,11 +4,10 @@
 #include "TextObject.h"
 #include <functional>
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-#include <SDL_mixer.h>
+
 #include <sstream>
+
+#include "Common.h"
 
 #include "SDLErrorReport.h"
 #include "GameState.h"
@@ -53,6 +52,9 @@ GameApp::~GameApp()
 	Cleanup();
 }
 
+
+
+
 void GameApp::Cleanup()
 {
 	if (m_pState)
@@ -60,11 +62,7 @@ void GameApp::Cleanup()
 
 	m_Window.Release();
 
-	// Shutdown SDL
-	Mix_Quit();
-	TTF_Quit();
-	IMG_Quit();
-	SDL_Quit();
+	ShutdownSDL();
 }
 
 bool GameApp::ChangeState(std::unique_ptr<GameState> new_state)
@@ -77,36 +75,13 @@ bool GameApp::ChangeState(std::unique_ptr<GameState> new_state)
 	return (m_pState.get() != nullptr);
 }
 
+
+
+
 bool GameApp::Init(WindowCreationParams& createParam, std::string initial_state)
 {
-	// Initialise SDL, report error if it fails
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-	{
-		MsgBoxErrorReport("SDL Initialisation Failed!\n", SDL_GetError());
+	if (!InitSDL())
 		return false;
-	}
-
-	//Initialize PNG/JPG loading 
-	int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
-	if (!(IMG_Init(imgFlags) & imgFlags))
-	{
-		MsgBoxErrorReport("SDL_image could not initialize!\n", IMG_GetError());
-		return false;
-	}
-
-	//Initialize SDL_ttf 
-	if (TTF_Init() == -1)
-	{
-		MsgBoxErrorReport("SDL_ttf could not initialize!\n", TTF_GetError());
-		return false;
-	}
-
-	//Initialize SDL_mixer 
-	if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) 
-	{ 
-		MsgBoxErrorReport("SDL_mixer could not initialize!\n", Mix_GetError());
-		return false; 
-	}
 
 	// Create a window, report error if window not created
 	if (!m_Window.Create("Test Window",
