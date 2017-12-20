@@ -7,18 +7,7 @@
 #include "Renderer.h"
 #include "GUITheme.h"
 
-std::string GetClipboardText()
-{
-	char* cbstr{ SDL_GetClipboardText() };
-	std::string ret{ cbstr };
-	SDL_free(cbstr);
-	return ret;
-}
 
-bool SetClipboardText(const std::string& str)
-{
-	return SDL_SetClipboardText(str.c_str()) >= 0;
-}
 
 SGUI::TextBox::TextBox(Widget* parent, const std::string& value /*= "Untitled"*/) :
 Widget{parent},
@@ -44,7 +33,7 @@ mLastClick(0)
 		mFontSize = mTheme->mTextBoxFontSize;
 }
 
-void SGUI::TextBox::updateCursor(int posx, SDL_Keymod modifiers)
+void SGUI::TextBox::updateCursor(int posx, Keymod modifiers)
 {
 	// handle mouse cursor events
 	if (!mDragActive)
@@ -72,7 +61,7 @@ void SGUI::TextBox::setTheme(Theme* theme)
 		mFontSize = mTheme->mTextBoxFontSize;
 }
 
-bool SGUI::TextBox::mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers)
+bool SGUI::TextBox::mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers)
 {
 	if (button == LEFT && down && !mFocused)
 	{
@@ -123,7 +112,7 @@ bool SGUI::TextBox::mouseButtonEvent(const Point& p, MouseBut button, bool down,
 	return false;
 }
 
-bool SGUI::TextBox::mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers)
+bool SGUI::TextBox::mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers)
 {
 	// 			if (!mEditable)
 	// 				setCursor(Cursor::Arrow);
@@ -138,7 +127,7 @@ bool SGUI::TextBox::mouseMotionEvent(const Point& p, const Point& rel, MouseButS
 	return false;
 }
 
-bool SGUI::TextBox::mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers)
+bool SGUI::TextBox::mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers)
 {
 	if (mSelectionPos < 0)
 		mSelectionPos = mCursorPos;
@@ -190,7 +179,7 @@ bool SGUI::TextBox::focusEvent(bool focused)
 	return true;
 }
 
-bool SGUI::TextBox::keyboardEvent(SDL_Scancode scan, SDL_Keycode key, bool down, SDL_Keymod modifiers)
+bool SGUI::TextBox::keyboardEvent(Scancode scan, Keycode key, bool down, Keymod modifiers)
 {
 	if (!mEditable || !focused())
 		return false;
@@ -281,7 +270,7 @@ bool SGUI::TextBox::keyboardEvent(SDL_Scancode scan, SDL_Keycode key, bool down,
 	return true;
 }
 
-void SGUI::TextBox::SelectWithShift(SDL_Keymod modifiers)
+void SGUI::TextBox::SelectWithShift(Keymod modifiers)
 {
 	if (modifiers & KMOD_SHIFT)
 	{
@@ -624,7 +613,7 @@ bool SGUI::TextBox::copySelection()
 		auto endIt = mValue.begin();
 		utf8::advance(endIt, end, mValue.end());
 
-		if ( SetClipboardText( std::string{beginIt, endIt} ) )
+		if ( !SetClipboardText( std::string{beginIt, endIt} ) )
 		{
 			std::string errorStr{ SDL_GetError() };
 			// TODO maybe report error to user

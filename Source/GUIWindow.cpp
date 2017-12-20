@@ -58,7 +58,7 @@ namespace SGUI
 		return result;
 	}
 
-	bool Window::mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers)
+	bool Window::mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers)
 	{
 		if (mDrag && buttons.mLeft )
 		{
@@ -72,7 +72,7 @@ namespace SGUI
 		return false;
 	}
 
-	bool Window::mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers)
+	bool Window::mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers)
 	{
 		if (Widget::mouseButtonEvent(p, button, down, modifiers))
 			return true;

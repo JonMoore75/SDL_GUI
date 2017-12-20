@@ -231,13 +231,13 @@ namespace SGUI
 		virtual void performLayout(Renderer& renderer);
 
 		/// Handle a mouse button event (default implementation: propagate to children)
-		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers);
+		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers);
 
 		/// Handle a mouse motion event (default implementation: propagate to children)
-		virtual bool mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers);
+		virtual bool mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers);
 
 		/// Handle a mouse drag event (default implementation: do nothing)
-		virtual bool mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers) { return false; }
+		virtual bool mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers) { return false; }
 
 		/// Handle a mouse enter/leave event (default implementation: record this fact, but do nothing)
 		virtual bool mouseEnterEvent(const Point& p, bool enter);
@@ -249,7 +249,7 @@ namespace SGUI
 		virtual bool focusEvent(bool focused);
 
 		/// Handle a keyboard event (default implementation: do nothing)
-		virtual bool keyboardEvent(SDL_Scancode scan, SDL_Keycode key, bool down, SDL_Keymod modifiers) { return false; }
+		virtual bool keyboardEvent(Scancode scan, Keycode key, bool down, Keymod modifiers) { return false; }
 
 		/// Handle text input (UTF-32 format) (default implementation: do nothing)
 		virtual bool keyboardCharacterEvent(const std::string& codepoint) { return false; }

@@ -97,32 +97,12 @@ public:
 
 	void CleanUp() override {}
 
-	bool OnUTFCharacter(const std::string& codepoint) override
+	bool OnEvent(SDL_Event& Event) override
 	{
-		return mGUI.keyboardCharacterEvent(codepoint);
-	}
-
-	bool OnKeyDown(SDL_Scancode scan, SDL_Keycode key) override
-	{ 
-		return mGUI.keyboardEvent(scan, key, true, SDL_GetModState());
-	}
-
-	bool OnKeyUp(SDL_Scancode scan, SDL_Keycode key) override
-	{ 
-		return mGUI.keyboardEvent(scan, key, false, SDL_GetModState());
-	}
-
-	bool OnLButtonDown(int mX, int mY) override
-	{ 
-		return mGUI.mouseButtonEvent(Point(mX, mY), SGUI::MouseBut::LEFT, true, SDL_GetModState());
-	}
-	bool OnLButtonUp(int mX, int mY) override 
-	{ 
-		return mGUI.mouseButtonEvent(Point(mX, mY), SGUI::MouseBut::LEFT, false, SDL_GetModState());
-	}
-	bool OnMouseMove(int mX, int mY, int relX, int relY, bool Left, bool Right, bool Middle) override 
-	{ 
-		return mGUI.mouseMotionEvent(Point(mX, mY), Point(relX, relY), SGUI::MouseButStatus(Left, Middle, Right), SDL_GetModState());
+		if (mGUI.GUIEventHandler(Event))
+			return true;
+			
+		return EventHandler::OnEvent(Event);
 	}
 
 private:

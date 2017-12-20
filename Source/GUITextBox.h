@@ -12,10 +12,6 @@
 #include "GUIWidget.h"
 #include "TimeKeeper.h"
 
-std::string GetClipboardText();
-
-bool SetClipboardText(const std::string& str);
-
 struct GlyphPosition
 {
 	int index;	// Index in character array for start of that character
@@ -92,17 +88,17 @@ namespace SGUI
 		std::function<bool(const std::string& str)> callback() const { return mCallback; }
 		void setCallback(const std::function<bool(const std::string& str)> &callback) { mCallback = callback; }
 
-		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers) override;
+		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers) override;
 
-		virtual bool mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers) override;
+		virtual bool mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers) override;
 
-		virtual bool mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers) override;
+		virtual bool mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers) override;
 
 		virtual bool focusEvent(bool focused) override;
 
-		virtual bool keyboardEvent(SDL_Scancode scan, SDL_Keycode key, bool down, SDL_Keymod modifiers) override;
+		virtual bool keyboardEvent(Scancode scan, Keycode key, bool down, Keymod modifiers) override;
 
-		void SelectWithShift(SDL_Keymod modifiers);
+		void SelectWithShift(Keymod modifiers);
 
 		virtual bool keyboardCharacterEvent(const std::string& codepoint) override;
 
@@ -142,7 +138,7 @@ namespace SGUI
 
 		void DeleteCharacters(int begin, int end);
 
-		void updateCursor(int posx, SDL_Keymod modifiers);
+		void updateCursor(int posx, Keymod modifiers);
 
 		int cursorIndex2Position(size_t index);
 

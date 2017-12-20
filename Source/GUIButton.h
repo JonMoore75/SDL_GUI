@@ -32,7 +32,7 @@ namespace SGUI
 		void setChangeCallback(const std::function<void(bool)>& callback) { mChangeCallback = callback; }
 
 
-		bool mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers) override;
+		bool mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers) override;
 
 		void Render(Renderer& renderer, Point& offset) override;
 

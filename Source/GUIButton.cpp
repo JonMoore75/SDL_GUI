@@ -52,7 +52,7 @@ namespace SGUI
 		mImageText.TextAlign(align, Point{ mImageNormal.GetWidth(), mImageNormal.GetHeight() });
 	}
 
-	bool Button::mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers)
+	bool Button::mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers)
 	{
 		Widget::mouseButtonEvent(p, button, down, modifiers);
 

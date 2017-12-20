@@ -40,4 +40,26 @@ Point TextBounds(const std::string& fontName, int fontSize, const std::string& t
 	return textSize;
 }
 
+void StartUnicodeEvents()
+{
+	SDL_StartTextInput();
+}
+
+void StopUnicodeEvents()
+{
+	SDL_StopTextInput();
+}
+
+std::string GetClipboardText()
+{
+	char* cbstr{ SDL_GetClipboardText() };
+	std::string ret{ cbstr };
+	SDL_free(cbstr);
+	return ret;
+}
+
+bool SetClipboardText(const std::string& str)
+{
+	return SDL_SetClipboardText(str.c_str()) >= 0;
+}
 

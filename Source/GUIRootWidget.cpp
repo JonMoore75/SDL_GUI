@@ -11,8 +11,75 @@ SGUI::RootWidget::RootWidget()
 {
 
 	mTimer.Initialize();
-	SDL_StartTextInput();
+	StartUnicodeEvents();
 	setTheme(new Theme());
+}
+
+bool SGUI::RootWidget::GUIEventHandler(SDL_Event& Event)
+{
+	bool eventHandled = false;
+	switch (Event.type)
+	{
+	case SDL_TEXTINPUT:
+		eventHandled = keyboardCharacterEvent( std::string{ Event.text.text } );
+		break;
+
+	case SDL_KEYDOWN:
+		eventHandled = keyboardEvent(Event.key.keysym.scancode, Event.key.keysym.sym, true, SDL_GetModState());
+		break;
+
+	case SDL_KEYUP:
+		eventHandled = keyboardEvent(Event.key.keysym.scancode, Event.key.keysym.sym, false, SDL_GetModState());
+		break;
+
+	case SDL_MOUSEMOTION:
+		eventHandled = mouseMotionEvent( Point{ Event.motion.x, Event.motion.y }, Point{ Event.motion.xrel, Event.motion.yrel }, 
+			SGUI::MouseButStatus{ (Event.motion.state&SDL_BUTTON(SDL_BUTTON_LEFT)) != 0, (Event.motion.state&SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0, (Event.motion.state&SDL_BUTTON(SDL_BUTTON_MIDDLE)) != 0 }, 
+			SDL_GetModState() );
+		break;
+
+	case SDL_MOUSEBUTTONDOWN:
+	{
+		switch (Event.button.button)
+		{
+		case SDL_BUTTON_LEFT:
+			eventHandled = mouseButtonEvent(Point{ Event.button.x, Event.button.y }, SGUI::MouseBut::LEFT, true, SDL_GetModState());
+			break;
+
+		case SDL_BUTTON_RIGHT:
+			eventHandled = mouseButtonEvent(Point{ Event.button.x, Event.button.y }, SGUI::MouseBut::MIDDLE, true, SDL_GetModState());
+			break;
+
+		case SDL_BUTTON_MIDDLE:
+			eventHandled = mouseButtonEvent(Point{ Event.button.x, Event.button.y }, SGUI::MouseBut::RIGHT, true, SDL_GetModState());
+			break;
+		}
+		break;
+	}
+
+	case SDL_MOUSEBUTTONUP:
+		switch (Event.button.button)
+		{
+		case SDL_BUTTON_LEFT:
+			eventHandled = mouseButtonEvent(Point{ Event.button.x, Event.button.y }, SGUI::MouseBut::LEFT, false, SDL_GetModState());
+			break;
+
+		case SDL_BUTTON_RIGHT:
+			eventHandled = mouseButtonEvent(Point{ Event.button.x, Event.button.y }, SGUI::MouseBut::MIDDLE, false, SDL_GetModState());
+			break;
+
+		case SDL_BUTTON_MIDDLE:
+			eventHandled = mouseButtonEvent(Point{ Event.button.x, Event.button.y }, SGUI::MouseBut::RIGHT, false, SDL_GetModState());
+			break;
+		}
+		break;
+
+	default:
+		break;
+
+	}
+	return eventHandled;
+
 }
 
 void SGUI::RootWidget::Render(Renderer& renderer, Point& offset)
@@ -30,7 +97,7 @@ void SGUI::RootWidget::Render(Renderer& renderer, Point& offset)
 	renderer.SetRenderDrawMode(oldMode);
 }
 
-bool SGUI::RootWidget::mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers)
+bool SGUI::RootWidget::mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers)
 {
 	auto dropWidget = findWidget(p);
 	if (mDragActive && !down && dropWidget != mDragWidget)
@@ -76,7 +143,7 @@ void SGUI::RootWidget::updateFocus(Widget* widget)
 	// 				moveWindowToFront(window);
 }
 
-bool SGUI::RootWidget::keyboardEvent(SDL_Scancode scan, SDL_Keycode key, bool down, SDL_Keymod modifiers)
+bool SGUI::RootWidget::keyboardEvent(Scancode scan, Keycode key, bool down, Keymod modifiers)
 {
 	if (mFocusPath.size() > 0)
 	{
@@ -98,7 +165,7 @@ bool SGUI::RootWidget::keyboardCharacterEvent(const std::string& codepoint)
 	return false;
 }
 
-bool SGUI::RootWidget::mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers)
+bool SGUI::RootWidget::mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers)
 {
 	bool ret = false;
 	mLastInteraction = mTimer.GetCurrentTime();

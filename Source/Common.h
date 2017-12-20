@@ -83,6 +83,16 @@ bool PointinRect(int x, int y, const Rect& rect);
 
 Point TextBounds(const std::string& fontName, int fontSize, const std::string& text, Uint32 wrapLength=0);
 
+void StartUnicodeEvents();
+void StopUnicodeEvents();
+
+std::string GetClipboardText();
+bool SetClipboardText(const std::string& str);
+
+using Keymod = SDL_Keymod;
+using Keycode = SDL_Keycode;
+using Scancode = SDL_Scancode;
+
 #endif // Common_h__
 
 

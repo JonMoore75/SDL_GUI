@@ -4,6 +4,8 @@
 #include <SDL.h>
 #include <string>
 
+#include "Common.h"
+
 class EventHandler 
 {
 public:
@@ -42,9 +44,9 @@ public:
 //	virtual bool OnClose(int windowID)										{ return false; }
 
 	// Key Events
-	virtual bool OnKeyDown(SDL_Scancode scan, SDL_Keycode key)				{ return false; }
+	virtual bool OnKeyDown(Scancode scan, Keycode key)				{ return false; }
 
-	virtual bool OnKeyUp(SDL_Scancode scan, SDL_Keycode key)				{ return false; }
+	virtual bool OnKeyUp(Scancode scan, Keycode key)				{ return false; }
 
 	virtual bool OnUTFCharacter(const std::string& codepoint)				{ return false; }
 

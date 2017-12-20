@@ -150,7 +150,7 @@ namespace SGUI
 		}
 	}
 
-	bool Widget::mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers)
+	bool Widget::mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers)
 	{
 		Point relP = p - mPos;
 		for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it)
@@ -166,7 +166,7 @@ namespace SGUI
 		return false;
 	}
 
-	bool Widget::mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers)
+	bool Widget::mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers)
 	{
 		Point relP = p - mPos;
 		for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it) 

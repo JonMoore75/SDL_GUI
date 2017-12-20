@@ -29,9 +29,9 @@ namespace SGUI
 		void setModal(bool modal) { mModal = modal; }
 
 		/// Handle window drag events
-		virtual bool mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, SDL_Keymod modifiers) override;
+		virtual bool mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers) override;
 		/// Handle mouse events recursively and bring the current window to the top
-		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, SDL_Keymod modifiers) override;
+		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers) override;
 		/// Accept scroll events and propagate them to the widget under the mouse cursor
 		virtual bool scrollEvent(const  Point& p, const  Point& rel) override;
 

@@ -159,7 +159,7 @@ void GameApp::HandleEvents()
 
 		}
 
-		// If the window handled the event the return else pas to the state
+		// If the window handled the event the return else pass to the state
 		if (Event.type == SDL_WINDOWEVENT && Event.window.windowID == m_Window.GetID())
 			if (m_Window.OnEvent(Event))
 				continue;
