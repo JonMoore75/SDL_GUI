@@ -24,16 +24,11 @@ public:
 	void SetViewport(const Rect& rect) { SDL_RenderSetViewport(m_pRenderer, &rect); }
 	void SetViewportWholeScreen() { SDL_RenderSetViewport(m_pRenderer, nullptr); }
 
-	Rect GetViewport() const
-	{ 
-		Rect retRect{0,0,0,0};
-		SDL_RenderGetViewport(m_pRenderer, &retRect); 
-		return retRect;
-	}
+	Rect GetViewport() const;
 
-	void SetRenderTexture(Texture& texture);
+	void RenderToTexture(Texture& texture);
 
-	void SetRenderFrameBuffer()
+	void RenderToFrameBuffer()
 	{
 		SDL_SetRenderTarget(m_pRenderer, nullptr);
 	}
@@ -45,14 +40,7 @@ public:
 	void Line(int x1, int y1, int x2, int y2, const Color& color);
 	void Point(int x, int y, const Color& color);
 
-	SDL_BlendMode SetRenderDrawMode(SDL_BlendMode blendMode)
-	{
-		SDL_BlendMode oldBlendMode;
-		SDL_GetRenderDrawBlendMode(m_pRenderer, &oldBlendMode);
-		SDL_SetRenderDrawBlendMode(m_pRenderer, blendMode);
-
-		return oldBlendMode;
-	}
+	SDL_BlendMode SetRenderDrawMode(SDL_BlendMode blendMode);
 		
 	SDL_Renderer* GetPtr() const { return m_pRenderer; }
 		

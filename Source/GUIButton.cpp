@@ -18,34 +18,38 @@ namespace SGUI
 		if (mSize.isZero())
 			setSize(preferredSize(renderer));
 
+		SDL_BlendMode oldMode = renderer.SetRenderDrawMode(SDL_BLENDMODE_BLEND);
+
 		mImageNormal.Create(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width(), height());
-		renderer.SetRenderTexture(mImageNormal);
-		renderer.FillRect(Rect{ Point{0,0}, size() }, mTheme->mButtonGradientTopUnfocused);
+		renderer.RenderToTexture(mImageNormal);
+		renderer.FillRect(Rect{ Point{0,0}, size() }, mTheme->mButtonGradientTopFocused);
 		Rect lightRect{ 0, 1, mSize.x, mSize.y - 1 };
 		Rect darkRect{ 0, 0, mSize.x, mSize.y - 1 };
-		renderer.OutlineRect(lightRect, mTheme->mBorderLight);
-		renderer.OutlineRect(darkRect, mTheme->mBorderDark);
-		renderer.SetRenderFrameBuffer();
+ 		renderer.OutlineRect(lightRect, mTheme->mBorderLight);
+ 		renderer.OutlineRect(darkRect, mTheme->mBorderDark);
+		renderer.RenderToFrameBuffer();
 
 		// Pushed
 		mImagePushed.Create(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width(), height());
-		renderer.SetRenderTexture(mImagePushed);
+		renderer.RenderToTexture(mImagePushed);
 		renderer.FillRect(Rect{ Point{ 0,0 }, size() }, mTheme->mButtonGradientTopPushed);
 		lightRect = Rect{ 0, 0, mSize.x, mSize.y };
 		darkRect = Rect{ 0, 0, mSize.x, mSize.y - 1 };
 		renderer.OutlineRect(lightRect, mTheme->mBorderLight);
 		renderer.OutlineRect(darkRect, mTheme->mBorderDark);
-		renderer.SetRenderFrameBuffer();
+		renderer.RenderToFrameBuffer();
 
 		// Focused
 		mImageFocus.Create(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width(), height());
-		renderer.SetRenderTexture(mImageFocus);
+		renderer.RenderToTexture(mImageFocus);
 		renderer.FillRect(Rect{ Point{ 0,0 }, size() }, mTheme->mButtonGradientTopFocused);
 		lightRect = Rect{ 0, 0, mSize.x, mSize.y };
 		darkRect = Rect{ 0, 0, mSize.x, mSize.y - 1 };
 		renderer.OutlineRect(lightRect, mTheme->mBorderLight);
 		renderer.OutlineRect(darkRect, mTheme->mBorderDark);
-		renderer.SetRenderFrameBuffer();
+		renderer.RenderToFrameBuffer();
+
+		renderer.SetRenderDrawMode(oldMode);
 
 
 		mImageText.Create(renderer, mTheme->mFontNormal, fontSize(), mTheme->mTextColor);

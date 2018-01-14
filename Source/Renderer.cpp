@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include <SDL2_gfxPrimitives.h>
+
 #include "Texture.h"
 #include "Window.h"
 
@@ -37,7 +39,14 @@ void Renderer::Present()
 	}
 }
 
-void Renderer::SetRenderTexture(Texture& texture)
+Rect Renderer::GetViewport() const
+{
+	Rect retRect{ 0,0,0,0 };
+	SDL_RenderGetViewport(m_pRenderer, &retRect);
+	return retRect;
+}
+
+void Renderer::RenderToTexture(Texture& texture)
 {
 	SDL_SetRenderTarget(m_pRenderer, texture.GetPtr());
 }
@@ -80,4 +89,13 @@ void Renderer::Point(int x, int y, const Color& color)
 {
 	SDL_SetRenderDrawColor(m_pRenderer, color.r, color.g, color.b, color.a);
 	SDL_RenderDrawPoint(m_pRenderer, x, y);
+}
+
+SDL_BlendMode Renderer::SetRenderDrawMode(SDL_BlendMode blendMode)
+{
+	SDL_BlendMode oldBlendMode;
+	SDL_GetRenderDrawBlendMode(m_pRenderer, &oldBlendMode);
+	SDL_SetRenderDrawBlendMode(m_pRenderer, blendMode);
+
+	return oldBlendMode;
 }
