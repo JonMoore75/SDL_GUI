@@ -21,7 +21,7 @@
 
 bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
 {
-	// Tell root Widget the screen / physical window size
+	/// Tell root Widget the screen / physical window size
 	mGUI.setSize(Point{ wnd.GetWidth(), wnd.GetHeight() });
 
 	Point winPos{ wnd.GetWidth() / 3, wnd.GetHeight() / 3 };
@@ -35,9 +35,16 @@ bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
 	SGUI::Button* pButton{ new SGUI::Button(pWin, "World") };
 	assert(pButton);
 	pButton->setTooltip("Super-duper extra looooooooooooong, gigantic, enormous, extra special Tooltip");
+	pButton->setFlags(SGUI::Button::RadioButton);
 
 	SGUI::Button* pButton2{ new SGUI::Button(pWin, "HelloHelloHelloHelloEnd") };
 	assert(pButton2);
+	pButton2->setFlags(SGUI::Button::RadioButton);
+
+	SGUI::Button* pButton3{ new SGUI::Button(pWin, "Toggle Me!") };
+	assert(pButton3);
+	pButton3->setFlags(SGUI::Button::ToggleButton);
+
 
 //	std::function<void()> f = std::bind(&GUIState::ButtonCallback, this);
 //	pButton2->setCallback(f);
@@ -60,7 +67,7 @@ bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
 	textBox->setAlignment(SGUI::TextBox::Alignment::Right);
 	textBox->setEditable(true);
 
-	// Sets default theme and performs the layout
+	/// Sets default theme and performs the layout
 	mGUI.performLayout(wnd.GetRenderer());
 
 	return true;
@@ -107,7 +114,7 @@ public:
 	}
 
 private:
-	SGUI::RootWidget mGUI; // Root widget that stores the whole of this scenes GUI
+	SGUI::RootWidget mGUI; /// Root widget that stores the whole of this scenes GUI
 };
 
 
@@ -120,10 +127,10 @@ int main(int argc, char *argv[])
 
 	Window window;
 
-	{ // Scope to make sure mGUI is destroyed before Window 
+	{ /// Scope to make sure mGUI is destroyed before Window 
 		SGUI::RootWidget mGUI;
 
-		// Create a window, report error if window not created
+		/// Create a window, report error if window not created
 		if (!window.Create("Test Window",
 			SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED,
@@ -134,7 +141,7 @@ int main(int argc, char *argv[])
 			return false;
 		}
 
-		// Creates a renderer and clears the window
+		/// Creates a renderer and clears the window
 		if (!window.CreateRenderer(createParam.SetRendererCreateFlags()))
 		{
 			MsgBoxErrorReport("Renderer Creation Failed.\n", SDL_GetError());
@@ -146,7 +153,7 @@ int main(int argc, char *argv[])
 		std::function<bool(SDL_Event& Event)> f_eventHandle = [&mGUI](SDL_Event& Event) { return mGUI.GUIEventHandler(Event); };
 		std::function<void()> f_render = [&mGUI, &window]() 
 		{ 
-			// If we have valid window & renderer then render the frame
+			/// If we have valid window & renderer then render the frame
 			if (window.CanRender())
 			{
 				mGUI.Render(window.GetRenderer(), Point{ 0,0 });

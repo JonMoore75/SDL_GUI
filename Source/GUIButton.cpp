@@ -65,11 +65,21 @@ namespace SGUI
 			bool pushedBackup = mPushed;
 			if (down)
 			{
-				mPushed = true;
+				if (mFlags & RadioButton) 
+					RadioButtonDown();
+
+				if (mFlags & PopupButton) 
+					PopupButtonDown();
+
+				if (mFlags & ToggleButton)
+					mPushed = !mPushed;
+				else
+					mPushed = true;
 			}
-			else if (mPushed)
+			else if (mPushed)  // Mouse button released but GUIButton state is pushed
 			{
-				mPushed = false;
+				if (mFlags & NormalButton)
+					mPushed = false;
 				if (contains(p) && mCallback)
 					mCallback();
 			}
@@ -79,6 +89,49 @@ namespace SGUI
 			return true;
 		}
 		return false;
+	}
+
+	void Button::PopupButtonDown()
+	{
+		for (auto widget : parent()->children())
+		{
+			Button *b = dynamic_cast<Button *>(widget);
+			if (b != this && b && (b->flags() & PopupButton) && b->mPushed)
+			{
+				b->mPushed = false;
+				if (b->mChangeCallback)
+					b->mChangeCallback(false);
+			}
+		}
+	}
+
+	void Button::RadioButtonDown()
+	{
+		if (mButtonGroup.empty())
+		{
+			for (auto widget : parent()->children())
+			{
+				Button* b = dynamic_cast<Button*>(widget);
+				if (b != this && b && (b->flags() & RadioButton) && b->mPushed)
+				{
+					b->mPushed = false;
+					if (b->mChangeCallback)
+						b->mChangeCallback(false);
+				}
+			}
+		}
+		else
+		{
+			for (auto b : mButtonGroup)
+			{
+				if (b != this && (b->flags() & RadioButton) && b->mPushed)
+				{
+					b->mPushed = false;
+					if (b->mChangeCallback)
+						b->mChangeCallback(false);
+				}
+			}
+		}
 	}
 
 	void Button::Render(Renderer& renderer, Point& offset)
@@ -105,4 +158,6 @@ namespace SGUI
 
 		return Point{ textBounds.x + 20, textBounds.y + 10 };
 	}
+
+
 }

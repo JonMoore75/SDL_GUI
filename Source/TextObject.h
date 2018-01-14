@@ -23,7 +23,7 @@ public:
 
 	void Release() { mTextTexture.Release(); }
 
-	void SetText(const std::string& text)	{ mText = text; }
+	void SetText(const std::string& text) { mText = text; Release(); } // Change text then release the text so it is redrawn
 	const std::string& GetText() const		{ return mText; }
 
 	void SetAlpha(Uint8 alpha)	{ mTextTexture.SetAlpha(alpha); }
