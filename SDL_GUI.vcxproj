@@ -131,6 +131,8 @@
     <ClCompile Include="Source\Common.cpp" />
     <ClCompile Include="Source\GUILabel.cpp" />
     <ClCompile Include="Source\GUILayout.cpp" />
+    <ClCompile Include="Source\GUIPopup.cpp" />
+    <ClCompile Include="Source\GUIPopupButton.cpp" />
     <ClCompile Include="Source\GUIRootWidget.cpp" />
     <ClCompile Include="Source\GUITextBox.cpp" />
     <ClCompile Include="Source\GUITheme.cpp" />
@@ -158,6 +160,8 @@
     <ClInclude Include="Source\GUIButton.h" />
     <ClInclude Include="Source\Common.h" />
     <ClInclude Include="Source\GUILabel.h" />
+    <ClInclude Include="Source\GUIPopup.h" />
+    <ClInclude Include="Source\GUIPopupButton.h" />
     <ClInclude Include="Source\GUIRootWidget.h" />
     <ClInclude Include="Source\GUITextBox.h" />
     <ClInclude Include="Source\GUITheme.h" />

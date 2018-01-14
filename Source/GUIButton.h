@@ -24,7 +24,7 @@ namespace SGUI
 			PopupButton = (1 << 3)		///< A popup Button
 		};
 
-		Button(Widget* parent, std::string text) : Widget{parent}, mImageText{ text } { }
+		Button(Widget* parent, std::string text, int icon = 0) : Widget{ parent }, mImageText{ text }, mIcon{ icon } { }
 		virtual ~Button() { CleanUp(); }
 
 		void CleanUp();
@@ -72,11 +72,12 @@ namespace SGUI
 		virtual Point preferredSize(Renderer& renderer) const override;
 
 
+	protected:
+		bool mPushed{ false };
+
 	private:
 		void PopupButtonDown();
 		void RadioButtonDown();
-
-		bool mPushed{ false };
 
 		std::function<void()>		mCallback;
 		std::function<void(bool)>	mChangeCallback;

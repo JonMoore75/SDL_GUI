@@ -13,6 +13,7 @@
 #include "GUIWindow.h"
 #include "GUIRootWidget.h"
 #include "GUIButton.h"
+#include "GUIPopupButton.h"
 #include "GUITextBox.h"
 #include "GUILayout.h"
 #include "GUILabel.h"
@@ -35,15 +36,19 @@ bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
 	SGUI::Button* pButton{ new SGUI::Button(pWin, "World") };
 	assert(pButton);
 	pButton->setTooltip("Super-duper extra looooooooooooong, gigantic, enormous, extra special Tooltip");
-	pButton->setFlags(SGUI::Button::RadioButton);
 
 	SGUI::Button* pButton2{ new SGUI::Button(pWin, "HelloHelloHelloHelloEnd") };
 	assert(pButton2);
-	pButton2->setFlags(SGUI::Button::RadioButton);
 
-	SGUI::Button* pButton3{ new SGUI::Button(pWin, "Toggle Me!") };
-	assert(pButton3);
-	pButton3->setFlags(SGUI::Button::ToggleButton);
+	SGUI::PopupButton* pPopupBtn{ new SGUI::PopupButton(pWin, "Popup") };
+	assert(pPopupBtn);
+
+	SGUI::Popup* pPopup = pPopupBtn->popup();
+	assert(pPopup);
+
+	pPopup->setLayout(new SGUI::GroupLayout());
+	new SGUI::Label(pPopup, "Arbitrary widgets can be placed here");
+	SGUI::Button* pButton3{ new SGUI::Button(pPopup, "Inside Popup") };
 
 
 //	std::function<void()> f = std::bind(&GUIState::ButtonCallback, this);

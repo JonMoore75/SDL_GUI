@@ -7,6 +7,7 @@
 #include "GUIRootWidget.h"
 #include "GUILayout.h"
 #include "GUITheme.h"
+#include "GUIWindow.h"
 
 namespace SGUI
 {
@@ -119,6 +120,36 @@ namespace SGUI
 			}
 		}
 	}
+
+	Window* Widget::window() 
+	{
+		Widget* widget = this;
+		while (true) 
+		{
+			if (!widget)
+				throw std::runtime_error(
+					"Widget:internal error (could not find parent window)");
+			Window* window = dynamic_cast<Window*>(widget);
+			if (window)
+				return window;
+			widget = widget->parent();
+		}
+	}
+
+// 	Screen* Widget::screen() 
+// 	{
+// 		Widget* widget = this;
+// 		while (true) 
+// 		{
+// 			if (!widget)
+// 				throw std::runtime_error(
+// 					"Widget:internal error (could not find parent screen)");
+// 			Screen* screen = dynamic_cast<Screen*>(widget);
+// 			if (screen)
+// 				return screen;
+// 			widget = widget->parent();
+// 		}
+// 	}
 
 	void Widget::requestFocus()
 	{

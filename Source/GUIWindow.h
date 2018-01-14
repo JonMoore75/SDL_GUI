@@ -41,6 +41,10 @@ namespace SGUI
 
 		Point preferredSize(Renderer& renderer) const override;
 
+		virtual void refreshRelativePlacement() {
+			/* Overridden in \ref Popup */
+		}
+
 	private:
 // 		Color mWindowFillUnfocused{43, 230};
 // 		Color mWindowFillFocused{45, 230};

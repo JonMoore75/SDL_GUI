@@ -12,6 +12,7 @@ namespace SGUI
 {
 	class Layout;
 	class Theme;
+	class Window;
 
 	enum MouseBut {NONE, LEFT, MIDDLE, RIGHT};
 
@@ -176,9 +177,9 @@ namespace SGUI
 			return new WidgetClass(this, args...);
 		}
 
-// 		/// Walk up the hierarchy and return the parent window
-// 		Window *window();
-// 
+		/// Walk up the hierarchy and return the parent window
+		Window* window();
+
 // 		/// Walk up the hierarchy and return the parent screen
 // 		Screen *screen();
 
