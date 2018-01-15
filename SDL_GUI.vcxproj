@@ -129,6 +129,7 @@
     <ClCompile Include="Source\GameState.cpp" />
     <ClCompile Include="Source\GUIButton.cpp" />
     <ClCompile Include="Source\Common.cpp" />
+    <ClCompile Include="Source\GUICheckBox.cpp" />
     <ClCompile Include="Source\GUILabel.cpp" />
     <ClCompile Include="Source\GUILayout.cpp" />
     <ClCompile Include="Source\GUIPopup.cpp" />
@@ -150,6 +151,8 @@
     <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\entypo.h" />
+    <ClInclude Include="Source\GUICheckBox.h" />
     <ClInclude Include="Source\GUIObject.h" />
     <ClInclude Include="Source\Collision.h" />
     <ClInclude Include="Source\EventHandler.h" />

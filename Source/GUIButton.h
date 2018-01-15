@@ -29,7 +29,7 @@ namespace SGUI
 
 		void CleanUp();
 
-		void PreRender(Renderer& renderer, TextObject::CLIPALIGN align = TextObject::CLIPCENTRE);
+		virtual void PreRender(Renderer& renderer, TextObject::CLIPALIGN align = TextObject::CLIPCENTRE);
 
 		/// Returns the caption of this Button
 		const std::string& caption() const { return mImageText.GetText(); }
@@ -64,9 +64,9 @@ namespace SGUI
 		void setChangeCallback(const std::function<void(bool)>& callback) { mChangeCallback = callback; }
 
 
-		bool mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers) override;
+		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers) override;
 
-		void Render(Renderer& renderer, Point& offset) override;
+		virtual void Render(Renderer& renderer, Point& offset) override;
 
 		/// Compute the preferred size of the widget
 		virtual Point preferredSize(Renderer& renderer) const override;
@@ -75,7 +75,6 @@ namespace SGUI
 	protected:
 		bool mPushed{ false };
 
-	private:
 		void PopupButtonDown();
 		void RadioButtonDown();
 

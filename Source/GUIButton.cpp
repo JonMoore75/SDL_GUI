@@ -60,7 +60,10 @@ namespace SGUI
 	{
 		Widget::mouseButtonEvent(p, button, down, modifiers);
 
-		if (button == SGUI::MouseBut::LEFT && mEnabled)
+		if (!mEnabled)
+			return false;
+
+		if (button == SGUI::MouseBut::LEFT)
 		{
 			bool pushedBackup = mPushed;
 			if (down)

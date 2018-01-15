@@ -17,6 +17,7 @@
 #include "GUITextBox.h"
 #include "GUILayout.h"
 #include "GUILabel.h"
+#include "GUICheckBox.h"
 
 
 
@@ -49,6 +50,7 @@ bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
 	pPopup->setLayout(new SGUI::GroupLayout());
 	new SGUI::Label(pPopup, "Arbitrary widgets can be placed here");
 	SGUI::Button* pButton3{ new SGUI::Button(pPopup, "Inside Popup") };
+	SGUI::CheckBox* pCheck{ new SGUI::CheckBox(pPopup, "Check Me!")};
 
 
 //	std::function<void()> f = std::bind(&GUIState::ButtonCallback, this);

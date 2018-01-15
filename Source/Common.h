@@ -98,6 +98,8 @@ using Keymod = SDL_Keymod;
 using Keycode = SDL_Keycode;
 using Scancode = SDL_Scancode;
 
+std::string int_to_utf8(int c);
+
 #endif // Common_h__
 
 
