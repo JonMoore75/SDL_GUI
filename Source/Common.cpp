@@ -27,6 +27,11 @@ Point operator-(const Point& lhs, const Point& rhs)
 	return Point{ lhs.x - rhs.x, lhs.y - rhs.y };
 }
 
+Point operator/(const Point& lhs, float scalar)
+{
+	return Point{ static_cast<int>(lhs.x / scalar), static_cast<int>(lhs.y / scalar) };
+}
+
 bool PointinRect(const Point& point, const Rect& rect)
 {
 	return (SDL_PointInRect(&point, &rect) == SDL_TRUE);

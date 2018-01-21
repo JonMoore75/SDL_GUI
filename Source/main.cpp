@@ -18,7 +18,7 @@
 #include "GUILayout.h"
 #include "GUILabel.h"
 #include "GUICheckBox.h"
-
+#include "GUIslider.h"
 
 
 bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
@@ -51,6 +51,7 @@ bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
 	new SGUI::Label(pPopup, "Arbitrary widgets can be placed here");
 	SGUI::Button* pButton3{ new SGUI::Button(pPopup, "Inside Popup") };
 	SGUI::CheckBox* pCheck{ new SGUI::CheckBox(pPopup, "Check Me!")};
+	SGUI::Slider* pSlider{ new SGUI::Slider(pPopup) };
 
 
 //	std::function<void()> f = std::bind(&GUIState::ButtonCallback, this);

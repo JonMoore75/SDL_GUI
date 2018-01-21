@@ -76,6 +76,7 @@ public:
 
 Point operator+(const Point& lhs, const Point& rhs);
 Point operator-(const Point& lhs, const Point& rhs);
+Point operator/(const Point& lhs, float scalar);
 
 Rect operator+(const Rect& lhs, const Point& rhs);
 

@@ -101,7 +101,7 @@ bool SGUI::RootWidget::mouseButtonEvent(const Point& p, MouseBut button, bool do
 {
 	auto dropWidget = findWidget(p);
 	if (mDragActive && !down && dropWidget != mDragWidget)
-		mDragWidget->mouseButtonEvent(p, button, down, modifiers);
+		mDragWidget->mouseButtonEvent(p - mDragWidget->parent()->absolutePosition(), button, down, modifiers);
 
 	if (down && (button == LEFT || button == RIGHT))
 	{

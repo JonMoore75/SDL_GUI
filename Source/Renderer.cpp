@@ -1,7 +1,5 @@
 #include "Renderer.h"
 
-#include <SDL2_gfxPrimitives.h>
-
 #include "Texture.h"
 #include "Window.h"
 
