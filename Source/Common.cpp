@@ -22,6 +22,16 @@ Rect operator+(const Rect& lhs, const Point& rhs)
 	return Rect{ lhs.x + rhs.x, lhs.y + rhs.y, lhs.w, lhs.h };
 }
 
+Rect IntersectRect(const Rect& lhs, const Rect& rhs)
+{
+	Rect result;
+	if (SDL_IntersectRect(&lhs, &rhs, &result))
+		return result;
+
+	// If no intersection will return zero size rect
+	return Rect{};
+}
+
 Point operator-(const Point& lhs, const Point& rhs)
 {
 	return Point{ lhs.x - rhs.x, lhs.y - rhs.y };

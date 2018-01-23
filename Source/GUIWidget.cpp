@@ -162,11 +162,8 @@ namespace SGUI
 			root->updateFocus(this);
 	}
 
-
-
 	void Widget::Render(Renderer& renderer, Point& offset)
 	{
-		Point newOffset = offset + mPos;
 		if (mChildren.empty())
 			return;
 		for (auto& child : mChildren) 
@@ -174,7 +171,14 @@ namespace SGUI
 			if (child->visible()) 
 			{
 				Rect oldViewport = renderer.GetViewport();
- 				renderer.SetViewport(Rect{ child->mPos + newOffset, child->mSize });
+				Rect childRect{ child->absolutePosition(), child->size() };
+
+				Rect intersectRect = IntersectRect(oldViewport, childRect);
+
+				renderer.SetViewport(intersectRect);
+
+				Point newOffset = childRect.getPosition() - intersectRect.getPosition();
+
 				child->Render(renderer, newOffset);
 				renderer.SetViewport(oldViewport);
 			}

@@ -32,7 +32,7 @@ namespace SGUI
 
 		bool mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers) override;
 
-		void DrawFocusedWidgetTooltip(Renderer& renderer, double elapsed);
+		void DrawFocusedWidgetTooltip(Renderer& renderer, double elapsed, Point& offset);
 
 	private:
 		Widget* mDragWidget{ nullptr };

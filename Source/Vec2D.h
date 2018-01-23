@@ -2,6 +2,8 @@
 #define Vec2D_h__
 #pragma once
 
+#include "Common.h"
+
 class Vec2D
 {
 public:
@@ -21,6 +23,8 @@ public:
 
 	int intX() const { return static_cast<int>(x); }
 	int intY() const { return static_cast<int>(y); }
+
+	Point asPoint() const { return Point{intX(), intY()}; }
 
 	double Length() const;
 	Vec2D& Normalize();

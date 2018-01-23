@@ -19,6 +19,7 @@
 #include "GUILabel.h"
 #include "GUICheckBox.h"
 #include "GUIslider.h"
+#include "GUI_VScrollPanel.h"
 
 
 bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
@@ -46,26 +47,33 @@ bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
 
 	SGUI::Popup* pPopup = pPopupBtn->popup();
 	assert(pPopup);
+	pPopup->setSize(Point{320,50});
+//	pPopup->setLayout(new SGUI::GroupLayout());
 
-	pPopup->setLayout(new SGUI::GroupLayout());
-	new SGUI::Label(pPopup, "Arbitrary widgets can be placed here");
-	SGUI::Button* pButton3{ new SGUI::Button(pPopup, "Inside Popup") };
-	SGUI::CheckBox* pCheck{ new SGUI::CheckBox(pPopup, "Check Me!")};
-	SGUI::Slider* pSlider{ new SGUI::Slider(pPopup) };
+	SGUI::VScrollPanel* vscroll = new SGUI::VScrollPanel(pPopup);
+	SGUI::Widget* panel = new SGUI::Widget(vscroll); // new SGUI::Widget(pPopup); // pPopup; //  
+
+	panel->setLayout(new SGUI::GroupLayout());
+	new SGUI::Label(panel, "Arbitrary widgets can be placed here");
+	SGUI::Button* pButton3{ new SGUI::Button(panel, "Inside Popup") };
+	SGUI::CheckBox* pCheck{ new SGUI::CheckBox(panel, "Check Me!")};
+	SGUI::Slider* pSlider{ new SGUI::Slider(panel) };
+
+	SGUI::TextBox* textBox = new SGUI::TextBox(panel, "Text");
+	textBox->setAlignment(SGUI::TextBox::Alignment::Center);
+	textBox->setEditable(true);
 
 
 //	std::function<void()> f = std::bind(&GUIState::ButtonCallback, this);
 //	pButton2->setCallback(f);
 
-	SGUI::TextBox* textBox{ new SGUI::TextBox(pWin, u8"みんなのにほんご") };
+	textBox= new SGUI::TextBox(pWin, u8"みんなのにほんご");
 	textBox->setAlignment(SGUI::TextBox::Alignment::Left);
 	textBox->setEditable(true);
 //	std::function<bool(const std::string& str)> fedit = [this](const std::string& str) { return EditCallBack(str); };
 //	textBox->setCallback(fedit);
 
-	textBox = new SGUI::TextBox(pWin, "Text");
-	textBox->setAlignment(SGUI::TextBox::Alignment::Center);
-	textBox->setEditable(true);
+
 
 	textBox = new SGUI::TextBox(pWin, "Text");
 	textBox->setAlignment(SGUI::TextBox::Alignment::Right);

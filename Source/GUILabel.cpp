@@ -49,6 +49,6 @@ namespace SGUI
 
 			mCaption.TextAlign(TextObject::CLIPLEFT);
 		}
-		mCaption.Render(renderer);
+		mCaption.Render(renderer, offset);
 	}
 }

@@ -25,9 +25,9 @@ void Texture::Release()
 	m_Height = 0;
 }
 
-void Texture::Render(Renderer& renderer, int x, int y) const
+void Texture::Render(Renderer& renderer, Point pos) const
 {
-	Rect image_rect = { x,y, m_ClipRect.w, m_ClipRect.h };
+	Rect image_rect = { pos, Point{m_ClipRect.w, m_ClipRect.h } };
 	RenderStretch(renderer, &image_rect);
 }
 

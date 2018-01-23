@@ -117,16 +117,15 @@ namespace SGUI
 
 		void CalculateGlyphs(FontTTF& mFont);
 
-		void RenderBackground(Renderer& renderer);
+		void RenderBackground(Renderer& renderer, Point& offset);
 
-		void RenderBorder(Renderer& renderer);
+		void RenderBorder(Renderer& renderer, Point& offset);
 
 		void RenderText(Renderer& renderer, Point& offset);
 
 		void CalculateInitialTextOffset();
 
 		void CheckCursorScroll();
-
 
 		bool checkFormat(const std::string& input, const std::string& format);
 
@@ -143,8 +142,6 @@ namespace SGUI
 		int cursorIndex2Position(size_t index);
 
 		int position2CursorIndex(int posx);
-
-
 
 		/// The location (if any) for the spin area.
 		enum class SpinArea { None, Top, Bottom };

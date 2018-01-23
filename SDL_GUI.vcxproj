@@ -139,6 +139,7 @@
     <ClCompile Include="Source\GUITextBox.cpp" />
     <ClCompile Include="Source\GUITheme.cpp" />
     <ClCompile Include="Source\GUIWindow.cpp" />
+    <ClCompile Include="Source\GUI_VScrollPanel.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\SDLErrorReport.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Source\GUITheme.h" />
     <ClInclude Include="Source\GUIWindow.h" />
     <ClInclude Include="Source\GUILayout.h" />
+    <ClInclude Include="Source\GUI_VScrollPanel.h" />
     <ClInclude Include="Source\Renderer.h" />
     <ClInclude Include="Source\SDLErrorReport.h" />
     <ClInclude Include="Source\SDL_TTF_utf8wrapsize.h" />

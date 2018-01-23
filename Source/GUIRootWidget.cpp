@@ -92,7 +92,7 @@ void SGUI::RootWidget::Render(Renderer& renderer, Point& offset)
 	// If there is a widget under the mouse with a tooltip, draw tootip after 0.5 secs
 	double elapsed = mTimer.GetCurrentTime() - mLastInteraction;
 	if (elapsed > 0.5f && mFocusWidget && !mFocusWidget->tooltip().empty())
-		DrawFocusedWidgetTooltip(renderer, elapsed);
+		DrawFocusedWidgetTooltip(renderer, elapsed, offset);
 
 	renderer.SetRenderDrawMode(oldMode);
 }
@@ -139,8 +139,8 @@ void SGUI::RootWidget::updateFocus(Widget* widget)
 		widget = widget->parent();
 	}
 
-	// 			if (window)
-	// 				moveWindowToFront(window);
+// 	if (window)
+// 		moveWindowToFront(window);
 }
 
 bool SGUI::RootWidget::keyboardEvent(Scancode scan, Keycode key, bool down, Keymod modifiers)
@@ -186,7 +186,7 @@ bool SGUI::RootWidget::mouseMotionEvent(const Point& p, const Point& rel, MouseB
 	return ret;
 }
 
-void SGUI::RootWidget::DrawFocusedWidgetTooltip(Renderer& renderer, double elapsed)
+void SGUI::RootWidget::DrawFocusedWidgetTooltip(Renderer& renderer, double elapsed, Point& offset)
 {
 	static int tipFontSize = 15;
 	static int tooltipWidth = 150;

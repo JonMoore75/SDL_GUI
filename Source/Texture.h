@@ -23,7 +23,7 @@ public:
 	SDL_Texture* GetPtr() { return m_pTexture; }
 	bool isNull() const { return m_pTexture == nullptr; }
 
-	void Render(Renderer& renderer, int x, int y) const;
+	void Render(Renderer& renderer, Point pos) const;
 	void RenderStretch(Renderer& renderer, Rect* pDestRect = nullptr) const;
 
 	void SetClipRect(const Rect& rect) { m_ClipRect = rect; }

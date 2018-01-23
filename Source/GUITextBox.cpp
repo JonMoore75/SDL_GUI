@@ -70,7 +70,7 @@ bool SGUI::TextBox::mouseButtonEvent(const Point& p, MouseBut button, bool down,
 	}
 
 
-	if (mEditable && focused() && PointinRect(p, mTextClipRect))
+	if (mEditable && focused() && PointinRect(p, mTextClipRect + mPos))
 	{
 		if (down)
 		{
@@ -336,8 +336,8 @@ void SGUI::TextBox::CalculateTextClipRect()
 	float unitWidth = 0;
 
 	// clip visible text area
-	int clipX = static_cast<int>(mPos.x + xSpacing + spinArrowsWidth - 1.0f);
-	int clipY = static_cast<int>(mPos.y + 1.0f);
+	int clipX = static_cast<int>(xSpacing + spinArrowsWidth - 1.0f);
+	int clipY = static_cast<int>(1.0f);
 	int clipWidth = static_cast<int>(mSize.x - unitWidth - spinArrowsWidth - 2 * xSpacing + 2.0f);
 	int clipHeight = static_cast<int>(mSize.y - 3.0f);
 
@@ -371,9 +371,9 @@ void SGUI::TextBox::CalculateGlyphs(FontTTF& mFont)
 	}
 }
 
-void SGUI::TextBox::RenderBackground(Renderer& renderer)
+void SGUI::TextBox::RenderBackground(Renderer& renderer, Point& offset)
 {
-	Rect fillRect{ 1, 2,  mSize.x - 2, mSize.y - 2 };
+	Rect fillRect{ offset.x + 1, offset.y + 2,  mSize.x - 2, mSize.y - 2 };
 
 	Color bg = Color(255, 32);			// Default
 	Color fg1 = Color(150, 32);			// Focused
@@ -387,14 +387,15 @@ void SGUI::TextBox::RenderBackground(Renderer& renderer)
 	renderer.FillRect(fillRect, fillCol);
 }
 
-void SGUI::TextBox::RenderBorder(Renderer& renderer)
+void SGUI::TextBox::RenderBorder(Renderer& renderer, Point& offset)
 {
-	Rect fillRect{ 0, 0,  mSize.x - 1, mSize.y - 1 };
+	Rect fillRect{ offset,  Point{mSize.x - 1, mSize.y - 1} };
 	renderer.OutlineRect(fillRect, Color(0, 48));
 }
 
 void SGUI::TextBox::RenderText(Renderer& renderer, Point& offset)
 {
+	// TODO correct offset drawing
 	if (mRedrawText)
 	{
 		PreRenderText(renderer);
@@ -402,29 +403,35 @@ void SGUI::TextBox::RenderText(Renderer& renderer, Point& offset)
 	}
 
 	Rect oldViewport = renderer.GetViewport();
-	renderer.SetViewport(mTextClipRect + offset);
+	Rect textAbsClipRect = mTextClipRect + absolutePosition();
+
+	Rect intersectRect = IntersectRect(oldViewport, textAbsClipRect);
+
+	renderer.SetViewport(intersectRect);
+
+	Point newOffset = textAbsClipRect.getPosition() - intersectRect.getPosition();
 
 	// Draw background for highlighted text
 	if (focused() && mSelectionPos > -1)
 	{
 		Color hiliteColor{ 255, 80 };
-		int cursorx = cursorIndex2Position(mCursorPos) - mTextClipRect.x;
-		int selectx = cursorIndex2Position(mSelectionPos) - mTextClipRect.x;
-		int x = std::min(cursorx, selectx);
+		int cursorx = cursorIndex2Position(mCursorPos) - mTextClipRect.x - mPos.x;
+		int selectx = cursorIndex2Position(mSelectionPos) - mTextClipRect.x - mPos.x;
+		int xMin = std::min(cursorx, selectx);
 		int selWidth = abs(cursorx - selectx);
-		Rect hilite_box{ x, 0, selWidth, mTextClipRect.h };
+		Rect hilite_box{ newOffset.x + xMin, newOffset.y, newOffset.x + selWidth, newOffset.y + mTextClipRect.h };
 
 		renderer.FillRect(hilite_box, hiliteColor);
 	}
 
-	mImageText.Render(renderer, mTextOffset.x, mTextOffset.y);
+	mImageText.Render(renderer, newOffset + mTextOffset);
 
 	// draw cursor
 	if (focused() && !mCommitted)
 	{
 		Color cursorColor{ 255, 192, 0, 255 };
-		int caretx = cursorIndex2Position(mCursorPos) - mTextClipRect.x;
-		renderer.Line(caretx, 0, caretx, mTextClipRect.h, cursorColor);
+		int caretx = cursorIndex2Position(mCursorPos) - mTextClipRect.x - mPos.x;
+		renderer.Line(newOffset.x + caretx, newOffset.y, newOffset.x + caretx, newOffset.y +  mTextClipRect.h, cursorColor);
 	}
 
 	renderer.SetViewport(oldViewport);
@@ -464,8 +471,8 @@ void SGUI::TextBox::CheckCursorScroll()
 		int numGlyphs = utf8::distance(mValue.begin(), mValue.end());
 		int prevCPos = mCursorPos > 0 ? mCursorPos - 1 : 0;
 		int nextCPos = mCursorPos < numGlyphs ? mCursorPos + 1 : numGlyphs;
-		int prevCX = cursorIndex2Position(prevCPos) - mTextClipRect.x;
-		int nextCX = cursorIndex2Position(nextCPos) - mTextClipRect.x;
+		int prevCX = cursorIndex2Position(prevCPos) - mTextClipRect.x - mPos.x;
+		int nextCX = cursorIndex2Position(nextCPos) - mTextClipRect.x - mPos.x;
 
 		// If cursor has moved out of clipping rect to right, 
 		// shift text left so it's visible
@@ -485,8 +492,8 @@ void SGUI::TextBox::Render(Renderer& renderer, Point& offset)
 {
 	Widget::Render(renderer, offset);
 
-	RenderBackground(renderer);
-	RenderBorder(renderer);
+	RenderBackground(renderer, offset);
+	RenderBorder(renderer, offset);
 	RenderText(renderer, offset);
 
 
@@ -682,7 +689,7 @@ void SGUI::TextBox::DeleteCharacters(int begin, int end)
 int SGUI::TextBox::cursorIndex2Position(size_t index)
 {
 	// Calculates the absolute screen position of the glyph at the index
-	int offset = mTextOffset.x + mTextClipRect.x;
+	int offset = mTextOffset.x + mTextClipRect.x + mPos.x;
 
 	if (mGlyphs.empty())
 		return offset;
@@ -696,7 +703,7 @@ int SGUI::TextBox::cursorIndex2Position(size_t index)
 int SGUI::TextBox::position2CursorIndex(int posx)
 {
 	// Convert from absolute coords to relative to text clipping rect
-	posx -= (mTextOffset.x + mTextClipRect.x);
+	posx -= (mTextOffset.x + mTextClipRect.x + mPos.x);
 
 	int mCursorId = 0;
 	

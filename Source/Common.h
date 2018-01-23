@@ -80,6 +80,8 @@ Point operator/(const Point& lhs, float scalar);
 
 Rect operator+(const Rect& lhs, const Point& rhs);
 
+Rect IntersectRect(const Rect& lhs, const Rect& rhs);
+
 bool PointinRect(const Point& point, const Rect& rect);
 bool PointinRect(int x, int y, const Rect& rect);
 

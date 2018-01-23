@@ -143,13 +143,13 @@ namespace SGUI
 			PreRender(renderer);
 
 		if (mPushed)
-			mImagePushed.Render(renderer, 0, 0);
+			mImagePushed.Render(renderer, offset);
 		else if (mMouseFocus && mEnabled)
-			mImageFocus.Render(renderer, 0, 0);
+			mImageFocus.Render(renderer, offset);
 		else
-			mImageNormal.Render(renderer, 0, 0);
+			mImageNormal.Render(renderer, offset);
 
-		mImageText.Render(renderer);
+		mImageText.Render(renderer, offset);
 
 		Widget::Render(renderer, offset);
 	}

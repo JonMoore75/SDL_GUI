@@ -19,7 +19,7 @@ namespace SGUI
 	void Window::Render(Renderer& renderer, Point& offset)
 	{
 		Point shadowOffset{ 2,2 };
-		Rect rect{ Point{0,0}, mSize };
+		Rect rect{ offset, mSize };
 // 		Rect shadowRect{ Point{ 0,0 } - shadowOffset, mSize + shadowOffset };
 // 		renderer.FillRect(shadowRect, Color{0,30});
 		renderer.FillRect(rect, mMouseFocus ? mTheme->mWindowFillFocused : mTheme->mWindowFillUnfocused);
@@ -29,11 +29,15 @@ namespace SGUI
 		{
 			int hh = mTheme->mWindowHeaderHeight;
 
-			Rect headerRect{ Point{ 0,0 }, Point{mSize.x, hh} };
+			Rect headerRect{ offset, Point{mSize.x, hh} };
 
 			renderer.FillRect(headerRect, mTheme->mWindowHeaderGradientTop);
-			renderer.Line(0, 0, mSize.x, 0, mTheme->mWindowHeaderSepTop);
-			renderer.Line(0, hh-1, mSize.x, hh-1, mTheme->mWindowHeaderSepBot);
+			renderer.Line(	offset.x,			offset.y, 
+							offset.x + mSize.x, offset.y, 
+							mTheme->mWindowHeaderSepTop);
+			renderer.Line(	offset.x,			offset.y + hh-1, 
+							offset.x + mSize.x, offset.y + hh-1, 
+							mTheme->mWindowHeaderSepBot);
 
 			if (mTitle.NeedsCreation())
 			{
@@ -41,7 +45,7 @@ namespace SGUI
 				mTitle.TextAlign(TextObject::CLIPCENTRE, Point{ mSize.x, hh });
 			}
 
-			mTitle.Render(renderer);		
+			mTitle.Render(renderer, offset);		
 		}
 
 		Widget::Render(renderer, offset);

@@ -65,18 +65,20 @@ namespace SGUI
 		const int kshadow = 3;
 		const int startX = kr + kshadow - 1;
 		const int widthX = mSize.x - 2 * (kr + kshadow);
+		const int trackWidth = 6;
+		const int startY = centre.y - trackWidth / 2;
 
 		// Draw slider track
-		Rect trackRect{ startX, centre.y - 3, widthX, 6 };
+		Rect trackRect{ offset.x + startX, offset.y + startY, widthX, trackWidth };
 		Uint8 alpha = mEnabled ? 128 : 210;
 		renderer.FillRect(trackRect, Color{ 0, alpha});
 		renderer.OutlineRect(trackRect, Color{ 0, 255 });
 
 		// Draw slider knob
 		int knobX = static_cast<int>(startX + (mValue - mRange.first) / (mRange.second - mRange.first) * widthX);
-		Point knobPos{ knobX, centre.y };
+		Point knobPos{ knobX - kr, centre.y - kr };
 
-		Rect knobRect{ knobPos.x - kr, knobPos.y - kr, 2*kr, 2*kr };
+		Rect knobRect{ offset + knobPos, Point{2 * kr, 2 * kr} };
 		renderer.FillRect(knobRect, mTheme->mBorderLight);
 		renderer.OutlineRect(knobRect, mTheme->mBorderDark);
 	}

@@ -31,7 +31,7 @@ namespace SGUI
 		int ds = mTheme->mWindowDropShadowSize;
 //		int cr = mTheme->mWindowCornerRadius;
 
-		Rect popRect{ Point{ 0,0 }, size() };
+		Rect popRect{ offset, size() };
 		renderer.FillRect(popRect, mTheme->mWindowPopup);
 
 		// TODO Draw anchor

@@ -37,7 +37,7 @@ namespace SGUI
 
 //		void SetBackgroundColor(const Color& col) { mBackgrdColor = col; }
 
-		void Render(Renderer& renderer, Point& offset) override;
+		void Render(Renderer& renderer , Point& offset) override;
 
 		Point preferredSize(Renderer& renderer) const override;
 

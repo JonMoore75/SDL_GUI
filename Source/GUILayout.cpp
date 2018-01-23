@@ -14,9 +14,12 @@ namespace SGUI
 		int width = 2 * mMargin;
 
 		const Window* window = dynamic_cast<const Window*>(widget);
-		assert( window->theme() );
+		
 		if (window && !window->title().empty())
+		{
+			assert(window->theme());
 			height += window->theme()->mWindowHeaderHeight - mMargin / 2;
+		}
 
 		bool first = true, indent = false;
 		for (auto& c : widget->children()) 

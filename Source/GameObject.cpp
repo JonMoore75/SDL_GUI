@@ -25,7 +25,7 @@ bool GameObject::CreateTextureFromText(Renderer& renderer, std::string text, Fon
 void GameObject::Render(Renderer& renderer) const
 {
 	Vec2D render_pos = m_Position + m_AnchorPt;
-	m_Texture.Render(renderer, render_pos.intX(), render_pos.intY());
+	m_Texture.Render(renderer, render_pos.asPoint());
 }
 
 void GameObject::SetAnchorPt(AnchorPt anchor)

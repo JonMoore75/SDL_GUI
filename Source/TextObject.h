@@ -40,9 +40,9 @@ public:
 
 	// Pass in the target position ie point to centre around if centre aligned
 	// If defined by target rect then pass in the top left point of target rect
-	void Render(Renderer& renderer, Point pt = { 0,0 })
+	void Render(Renderer& renderer, Point& offset)
 	{
-		mTextTexture.Render(renderer, pt.x + mOffset.x, pt.y + mOffset.y);
+		mTextTexture.Render(renderer, offset + mOffset);
 	}
 
 private:

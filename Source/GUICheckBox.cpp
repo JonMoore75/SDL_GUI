@@ -139,14 +139,14 @@ namespace SGUI
 			PreRender(renderer);
 
 		if (mPushed)
-			mImagePushed.Render(renderer, mTickBoxPos.x, mTickBoxPos.y);
+			mImagePushed.Render(renderer, offset + mTickBoxPos);
 		else
-			mImageNormal.Render(renderer, mTickBoxPos.x, mTickBoxPos.y);
+			mImageNormal.Render(renderer, offset + mTickBoxPos);
 
-		mImageText.Render(renderer, mTextPos);
+		mImageText.Render(renderer, offset + mTextPos);
 
 		if (mChecked)
-			mCheckMark.Render(renderer, mCheckPos.x, mCheckPos.y);
+			mCheckMark.Render(renderer, offset + mCheckPos);
 
 		Widget::Render(renderer, offset);
 	}
