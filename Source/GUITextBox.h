@@ -154,22 +154,30 @@ namespace SGUI
 		bool mValidFormat;
 		bool mRedrawText;
 		bool mDragActive;
+
 		Alignment mAlignment;
+		
 		std::string mValue;
 		std::string mValueBackup;
 		std::string mDefaultValue;
 		std::string mUnits;
 		std::string mFormat;
+
+		std::vector<GlyphPosition> mGlyphs;
+
 		int mUnitsImage;
-		std::function<bool(const std::string& str)> mCallback;
 		int mCursorPos;
 		int mSelectionPos;
 		double mLastClick;
+
 		TimeKeeper mTimer;
+
 		Texture mImageText;		// Texture with the pre-rendered text
-		std::vector<GlyphPosition> mGlyphs;
+		
 		Rect mTextClipRect;		// The clipping rect for the text
 		Point mTextOffset;		// Relative to top left corner of mTextClipRect
+
+		std::function<bool(const std::string& str)> mCallback;
 	};
 }
 

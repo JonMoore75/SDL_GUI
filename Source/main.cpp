@@ -45,6 +45,8 @@ bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
 	SGUI::PopupButton* pPopupBtn{ new SGUI::PopupButton(pWin, "Popup") };
 	assert(pPopupBtn);
 
+	pPopupBtn->setSide(SGUI::Popup::Left);
+
 	SGUI::Popup* pPopup = pPopupBtn->popup();
 	assert(pPopup);
 	pPopup->setSize(Point{320,50});
@@ -72,8 +74,6 @@ bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
 	textBox->setEditable(true);
 //	std::function<bool(const std::string& str)> fedit = [this](const std::string& str) { return EditCallBack(str); };
 //	textBox->setCallback(fedit);
-
-
 
 	textBox = new SGUI::TextBox(pWin, "Text");
 	textBox->setAlignment(SGUI::TextBox::Alignment::Right);
@@ -103,16 +103,6 @@ public:
 	void Update(double dt)			override {}
 
 	QUITRESPONSE QuitDialog() override { return TwoOptionQuitDialog(); }
-
-// 	void ButtonCallback() 
-// 	{
-// 		
-// 	}
-// 
-// 	bool EditCallBack(const std::string& str)
-// 	{
-// 		return true;
-// 	}
 
 	void Render(Renderer& renderer)	override
 	{
@@ -166,6 +156,7 @@ int main(int argc, char *argv[])
 
 		InitialiseGUI(mGUI, window);
 
+		/// Setup event handling and rendering lambda functions
 		std::function<bool(SDL_Event& Event)> f_eventHandle = [&mGUI](SDL_Event& Event) { return mGUI.GUIEventHandler(Event); };
 		std::function<void()> f_render = [&mGUI, &window]() 
 		{ 

@@ -7,8 +7,8 @@ namespace SGUI
 {
 	Theme::Theme()
 	{
-		mFontNormal = "Boku2-Regular.otf";
-		mFontIcons = "entypo.ttf";
+		mFontNormal = "Resources\\Boku2-Regular.otf";
+		mFontIcons = "Resources\\entypo.ttf";
 
 		mStandardFontSize = 16;
 		mButtonFontSize = 20;

@@ -2,6 +2,7 @@
 
 #include "Renderer.h"
 #include "GUITheme.h"
+#include "entypo.h"
 
 namespace SGUI
 {
@@ -10,7 +11,7 @@ namespace SGUI
 		mImageNormal.Release();
 		mImagePushed.Release();
 		mImageFocus.Release();
-		mImageText.Release();
+//		mImageText.Release();
 	}
 
 	void Button::PreRender(Renderer& renderer, TextObject::CLIPALIGN align /*= TextObject::CLIPCENTRE*/)
@@ -20,6 +21,47 @@ namespace SGUI
 
 		SDL_BlendMode oldMode = renderer.SetRenderDrawMode(SDL_BLENDMODE_BLEND);
 
+		TextObject imageText{ mCaption };
+		Point textOffset;
+		imageText.Create(renderer, mTheme->mFontNormal, fontSize(), mTheme->mTextColor);
+		imageText.TextAlign(align, Point{ width(), height() });
+
+		Texture iconTexture;
+		Point iconOffset;
+		if (mIcon)
+		{
+			/// Create check mark texture from icon
+			FontTTF fontTTF;
+			fontTTF.LoadFont(mTheme->mFontIcons.c_str(), fontSize(), mTheme->mTextColor);
+			iconTexture.CreateFromText(renderer, int_to_utf8(mIcon), fontTTF);
+			fontTTF.Release();
+
+			int iconWidth = iconTexture.GetWidth();
+			int iconPad = 8;
+			int textWidth = imageText.getWidth();
+			
+			iconOffset.y = iconTexture.GetHeight() / 2;
+
+			switch (mIconPosition)
+			{
+			case IconPosition::LeftCentered:
+				iconOffset.x = (iconTexture.GetWidth() - textWidth - iconWidth) / 2;
+				textOffset.x += iconWidth / 2;
+				break;
+			case IconPosition::RightCentered:
+				iconOffset.x = (iconTexture.GetWidth() + textWidth) / 2;
+				textOffset.x -= iconWidth / 2;
+				break;
+			default:
+			case IconPosition::Left:
+				iconOffset.x = iconPad;
+				break;
+			case IconPosition::Right:
+				iconOffset.x = width() - iconWidth - iconPad;
+				break;
+			}
+		}
+
 		mImageNormal.Create(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width(), height());
 		renderer.RenderToTexture(mImageNormal);
 		renderer.FillRect(Rect{ Point{0,0}, size() }, mTheme->mButtonGradientTopFocused);
@@ -27,6 +69,8 @@ namespace SGUI
 		Rect darkRect{ 0, 0, mSize.x, mSize.y - 1 };
  		renderer.OutlineRect(lightRect, mTheme->mBorderLight);
  		renderer.OutlineRect(darkRect, mTheme->mBorderDark);
+		imageText.Render(renderer, textOffset);
+		iconTexture.Render(renderer, iconOffset);
 		renderer.RenderToFrameBuffer();
 
 		// Pushed
@@ -37,6 +81,8 @@ namespace SGUI
 		darkRect = Rect{ 0, 0, mSize.x, mSize.y - 1 };
 		renderer.OutlineRect(lightRect, mTheme->mBorderLight);
 		renderer.OutlineRect(darkRect, mTheme->mBorderDark);
+		imageText.Render(renderer, textOffset);
+		iconTexture.Render(renderer, iconOffset);
 		renderer.RenderToFrameBuffer();
 
 		// Focused
@@ -47,13 +93,15 @@ namespace SGUI
 		darkRect = Rect{ 0, 0, mSize.x, mSize.y - 1 };
 		renderer.OutlineRect(lightRect, mTheme->mBorderLight);
 		renderer.OutlineRect(darkRect, mTheme->mBorderDark);
+		imageText.Render(renderer, textOffset);
+		iconTexture.Render(renderer, iconOffset);
 		renderer.RenderToFrameBuffer();
 
 		renderer.SetRenderDrawMode(oldMode);
 
 
-		mImageText.Create(renderer, mTheme->mFontNormal, fontSize(), mTheme->mTextColor);
-		mImageText.TextAlign(align, Point{ mImageNormal.GetWidth(), mImageNormal.GetHeight() });
+// 		mImageText.Create(renderer, mTheme->mFontNormal, fontSize(), mTheme->mTextColor);
+// 		mImageText.TextAlign(align, Point{ mImageNormal.GetWidth(), mImageNormal.GetHeight() });
 	}
 
 	bool Button::mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers)
@@ -139,7 +187,8 @@ namespace SGUI
 
 	void Button::Render(Renderer& renderer, Point& offset)
 	{
-		if (mImageText.NeedsCreation())
+//		if (mImageText.NeedsCreation())
+		if (mImageNormal.isNull())
 			PreRender(renderer);
 
 		if (mPushed)
@@ -149,7 +198,7 @@ namespace SGUI
 		else
 			mImageNormal.Render(renderer, offset);
 
-		mImageText.Render(renderer, offset);
+//		mImageText.Render(renderer, offset);
 
 		Widget::Render(renderer, offset);
 	}
@@ -157,7 +206,7 @@ namespace SGUI
 	Point Button::preferredSize(Renderer& renderer) const
 	{
 		int fontSize = (mFontSize == -1) ? mTheme->mButtonFontSize : mFontSize;
-		Point textBounds = TextBounds(mTheme->mFontNormal, fontSize, mImageText.GetText());
+		Point textBounds = TextBounds(mTheme->mFontNormal, fontSize, mCaption);// mImageText.GetText());
 
 		return Point{ textBounds.x + 20, textBounds.y + 10 };
 	}

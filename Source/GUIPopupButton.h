@@ -23,9 +23,6 @@ namespace SGUI
 		PopupButton(Widget* parent, const std::string& caption = "Untitled",
 			int buttonIcon = 0);
 
-// 		void setChevronIcon(int icon) { mChevronIcon = icon; }
-// 		int chevronIcon() const { return mChevronIcon; }
-
 		void setSide(Popup::Side popupSide);
 		Popup::Side side() const { return mPopup->side(); }
 
@@ -39,6 +36,5 @@ namespace SGUI
 
 	protected:
 		Popup* mPopup{ nullptr };
-	//	int mChevronIcon{ 0 };
 	};
 }
