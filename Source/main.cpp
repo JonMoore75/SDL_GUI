@@ -75,9 +75,10 @@ bool InitialiseGUI(SGUI::RootWidget& mGUI, Window& wnd)
 //	std::function<bool(const std::string& str)> fedit = [this](const std::string& str) { return EditCallBack(str); };
 //	textBox->setCallback(fedit);
 
-	textBox = new SGUI::TextBox(pWin, "Text");
+	textBox = new SGUI::IntBox<int>(pWin, 50);
 	textBox->setAlignment(SGUI::TextBox::Alignment::Right);
 	textBox->setEditable(true);
+	textBox->setSpinnable(true);
 
 	textBox = new SGUI::TextBox(pWin, "VeryVeryVeryVeryVeryLongText");
 	textBox->setAlignment(SGUI::TextBox::Alignment::Right);

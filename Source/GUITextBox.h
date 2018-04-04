@@ -26,7 +26,8 @@ namespace SGUI
 	{
 	public:
 		/// How to align the text in the text box.
-		enum class Alignment {
+		enum class Alignment
+		{
 			Left,
 			Center,
 			Right
@@ -35,24 +36,19 @@ namespace SGUI
 		TextBox(Widget* parent, const std::string& value = "Untitled");
 
 		bool editable() const { return mEditable; }
-		void TextBox::setEditable(bool editable) 
+		void TextBox::setEditable(bool editable)
 		{
 			mEditable = editable;
 			//setCursor(editable ? Cursor::IBeam : Cursor::Arrow);
 		}
 
-		void setPosition(const Point& pos) 
+		void setPosition(const Point& pos)
 		{
 			Widget::setPosition(pos);
 			CalculateTextClipRect();
 		}
 
-		void setSize(const Point& size)
-		{
-			Widget::setSize(size);
-			CalculateTextClipRect();
-			CalculateInitialTextOffset();
-		}
+		void setSize(const Point& size);
 
 		bool spinnable() const { return mSpinnable; }
 		void setSpinnable(bool spinnable) { mSpinnable = spinnable; }
@@ -64,9 +60,9 @@ namespace SGUI
 		void setDefaultValue(const std::string &defaultValue) { mDefaultValue = defaultValue; }
 
 		Alignment alignment() const { return mAlignment; }
-		void setAlignment(Alignment align) 
+		void setAlignment(Alignment align)
 		{
-			mAlignment = align; 
+			mAlignment = align;
 			CalculateInitialTextOffset();
 		}
 
@@ -89,17 +85,12 @@ namespace SGUI
 		void setCallback(const std::function<bool(const std::string& str)> &callback) { mCallback = callback; }
 
 		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers) override;
-
 		virtual bool mouseMotionEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers) override;
-
 		virtual bool mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers) override;
 
 		virtual bool focusEvent(bool focused) override;
 
 		virtual bool keyboardEvent(Scancode scan, Keycode key, bool down, Keymod modifiers) override;
-
-		void SelectWithShift(Keymod modifiers);
-
 		virtual bool keyboardCharacterEvent(const std::string& codepoint) override;
 
 		void Render(Renderer& renderer, Point& offset) override;
@@ -107,11 +98,13 @@ namespace SGUI
 		virtual Point preferredSize(Renderer& renderer) const override;
 
 		virtual void setEnabled(bool enabled) override;
-// 		virtual void save(Serializer &s) const override;
-// 		virtual bool load(Serializer &s) override;
+		// 		virtual void save(Serializer &s) const override;
+		// 		virtual bool load(Serializer &s) override;
 	protected:
-
+		void SelectWithShift(Keymod modifiers);
 		void PreRenderText(Renderer& renderer);
+
+		void PreRenderSpinArrows(Renderer& renderer);
 
 		void CalculateTextClipRect();
 
@@ -147,6 +140,8 @@ namespace SGUI
 		enum class SpinArea { None, Top, Bottom };
 		SpinArea spinArea(const Point& pos);
 
+		void RenderSpinArrows(Renderer& renderer, Point& offset);
+
 	protected:
 		bool mEditable;
 		bool mSpinnable;
@@ -156,12 +151,14 @@ namespace SGUI
 		bool mDragActive;
 
 		Alignment mAlignment;
-		
+
 		std::string mValue;
 		std::string mValueBackup;
 		std::string mDefaultValue;
 		std::string mUnits;
 		std::string mFormat;
+
+		SpinArea mSpinArea{ SpinArea::None };
 
 		std::vector<GlyphPosition> mGlyphs;
 
@@ -170,14 +167,300 @@ namespace SGUI
 		int mSelectionPos;
 		double mLastClick;
 
+		int mSpinnerSize{ 14 };
+
 		TimeKeeper mTimer;
 
 		Texture mImageText;		// Texture with the pre-rendered text
-		
+		Texture mImageSpinUp;	// Textures with the spin arrows
+		Texture mImageSpinDn;	// Textures with the spin arrows
+
 		Rect mTextClipRect;		// The clipping rect for the text
 		Point mTextOffset;		// Relative to top left corner of mTextClipRect
 
 		std::function<bool(const std::string& str)> mCallback;
 	};
-}
 
+
+	/**
+	* \class IntBox textbox.h nanogui/textbox.h
+	*
+	* \brief A specialization of TextBox for representing integral values.
+	*
+	* Template parameters should be integral types, e.g. ``int``, ``long``,
+	* ``uint32_t``, etc.
+	*/
+	template <typename Scalar>
+	class IntBox : public TextBox 
+	{
+	public:
+		IntBox(Widget* parent, Scalar value = (Scalar)0) : TextBox(parent) 
+		{
+			setDefaultValue("0");
+			setFormat(std::is_signed<Scalar>::value ? "[-]?[0-9]*" : "[0-9]*");
+			setValueIncrement(1);
+			setMinMaxValues(std::numeric_limits<Scalar>::lowest(), std::numeric_limits<Scalar>::max());
+			setValue(value);
+			setSpinnable(false);
+		}
+
+		Scalar value() const 
+		{
+			std::istringstream iss(TextBox::value());
+			Scalar value = 0;
+			iss >> value;
+			return value;
+		}
+
+		void setValue(Scalar value) 
+		{
+			Scalar clampedValue = std::min(std::max(value, mMinValue), mMaxValue);
+			TextBox::setValue(std::to_string(clampedValue));
+		}
+
+		void setCallback(const std::function<void(Scalar)> &cb) 
+		{
+			TextBox::setCallback(
+				[cb, this](const std::string &str) 
+				{
+					std::istringstream iss(str);
+					Scalar value = 0;
+					iss >> value;
+					setValue(value);
+					cb(value);
+					return true;
+				}
+			);
+		}
+
+		void setValueIncrement(Scalar incr) 
+		{
+			mValueIncrement = incr;
+		}
+		void setMinValue(Scalar minValue)
+		{
+			mMinValue = minValue;
+		}
+		void setMaxValue(Scalar maxValue) 
+		{
+			mMaxValue = maxValue;
+		}
+		void setMinMaxValues(Scalar minValue, Scalar maxValue) 
+		{
+			setMinValue(minValue);
+			setMaxValue(maxValue);
+		}
+
+		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers) override
+		{
+			if ((mEditable || mSpinnable) && down)
+			{
+				mMouseDownValue = value();
+				mMouseDownPos = p;
+			}
+
+			if (!down)
+				mMouseDownPos = Point{ -1,-1 };
+
+			SpinArea area = spinArea(p);
+			if (mSpinnable && area != SpinArea::None && down && !focused()) 
+			{
+				if (area == SpinArea::Top) 
+				{
+					setValue(value() + mValueIncrement);
+					mRedrawText = true;
+					if (mCallback)
+						mCallback(mValue);
+				}
+				else if (area == SpinArea::Bottom) 
+				{
+					setValue(value() - mValueIncrement);
+					mRedrawText = true;
+					if (mCallback)
+						mCallback(mValue);
+				}
+				return true;
+			}
+
+			return TextBox::mouseButtonEvent(p, button, down, modifiers);
+		}
+		virtual bool mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers) override
+		{
+			if (TextBox::mouseDragEvent(p, rel, buttons, modifiers)) 
+			{
+				return true;
+			}
+			if (mSpinnable && !focused() && buttons.mRight && mMouseDownPos.x != -1) 
+			{
+				int valueDelta = static_cast<int>((p.x - mMouseDownPos.x) / float(10));
+				setValue(mMouseDownValue + valueDelta * mValueIncrement);
+				if (mCallback)
+					mCallback(mValue);
+				return true;
+			}
+			return false;
+		}
+		virtual bool scrollEvent(const Point& p, const Point& rel) override
+		{
+			if (Widget::scrollEvent(p, rel)) 
+			{
+				return true;
+			}
+			if (mSpinnable && !focused()) 
+			{
+				int valueDelta = (rel.y > 0) ? 1 : -1;
+				setValue(value() + valueDelta * mValueIncrement);
+				if (mCallback)
+					mCallback(mValue);
+				return true;
+			}
+			return false;
+		}
+	private:
+		Scalar mMouseDownValue;
+		Scalar mValueIncrement;
+		Scalar mMinValue, mMaxValue;
+		Point mMouseDownPos{ -1,-1 };
+	};
+
+	/**
+	* \class FloatBox textbox.h nanogui/textbox.h
+	*
+	* \brief A specialization of TextBox representing floating point values.
+
+	* Template parameters should be float types, e.g. ``float``, ``double``,
+	* ``float64_t``, etc.
+	*/
+	template <typename Scalar>
+	class FloatBox : public TextBox 
+	{
+	public:
+		FloatBox(Widget* parent, Scalar value = (Scalar) 0.f) : TextBox(parent) 
+		{
+			mNumberFormat = sizeof(Scalar) == sizeof(float) ? "%.4g" : "%.7g";
+			setDefaultValue("0");
+			setFormat("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
+			setValueIncrement((Scalar) 0.1);
+			setMinMaxValues(std::numeric_limits<Scalar>::lowest(), std::numeric_limits<Scalar>::max());
+			setValue(value);
+			setSpinnable(false);
+		}
+
+		std::string numberFormat() const { return mNumberFormat; }
+		void numberFormat(const std::string &format) { mNumberFormat = format; }
+
+		Scalar value() const 
+		{
+			return (Scalar)std::stod(TextBox::value());
+		}
+
+		void setValue(Scalar value) 
+		{
+			Scalar clampedValue = std::min(std::max(value, mMinValue), mMaxValue);
+			char buffer[50];
+			NANOGUI_SNPRINTF(buffer, 50, mNumberFormat.c_str(), clampedValue);
+			TextBox::setValue(buffer);
+		}
+
+		void setCallback(const std::function<void(Scalar)> &cb) 
+		{
+			TextBox::setCallback([cb, this](const std::string &str) 
+			{
+				Scalar scalar = (Scalar)std::stod(str);
+				setValue(scalar);
+				cb(scalar);
+				return true;
+			});
+		}
+
+		void setValueIncrement(Scalar incr) 
+		{
+			mValueIncrement = incr;
+		}
+		void setMinValue(Scalar minValue) 
+		{
+			mMinValue = minValue;
+		}
+		void setMaxValue(Scalar maxValue) 
+		{
+			mMaxValue = maxValue;
+		}
+		void setMinMaxValues(Scalar minValue, Scalar maxValue) 
+		{
+			setMinValue(minValue);
+			setMaxValue(maxValue);
+		}
+
+		virtual bool mouseButtonEvent(const Point& p, MouseBut button, bool down, Keymod modifiers) override
+		{
+			if ((mEditable || mSpinnable) && down)
+			{
+				mMouseDownValue = value();
+				mMouseDownPos = p;
+			}
+
+			if (!down)
+				mMouseDownPos = Point{ -1,-1 };
+
+
+			SpinArea area = spinArea(p);
+			if (mSpinnable && area != SpinArea::None && down && !focused()) 
+			{
+				if (area == SpinArea::Top) 
+				{
+					setValue(value() + mValueIncrement);
+					if (mCallback)
+						mCallback(mValue);
+				}
+				else if (area == SpinArea::Bottom) 
+				{
+					setValue(value() - mValueIncrement);
+					if (mCallback)
+						mCallback(mValue);
+				}
+				return true;
+			}
+
+			return TextBox::mouseButtonEvent(p, button, down, modifiers);
+		}
+		virtual bool mouseDragEvent(const Point& p, const Point& rel, MouseButStatus buttons, Keymod modifiers) override
+		{
+			if (TextBox::mouseDragEvent(p, rel, button, modifiers)) 
+			{
+				return true;
+			}
+			if (mSpinnable && !focused() && button == 2 /* 1 << GLFW_MOUSE_BUTTON_2 */ && mMouseDownPos.x() != -1) 
+			{
+				int valueDelta = static_cast<int>((p.x - mMouseDownPos.x) / float(10));
+				setValue(mMouseDownValue + valueDelta * mValueIncrement);
+				if (mCallback)
+					mCallback(mValue);
+				return true;
+			}
+			return false;
+		}
+		virtual bool scrollEvent(const Point& p, const Point& rel) override
+		{
+			if (Widget::scrollEvent(p, rel)) 
+			{
+				return true;
+			}
+			if (mSpinnable && !focused()) 
+			{
+				int valueDelta = (rel.y > 0) ? 1 : -1;
+				setValue(value() + valueDelta * mValueIncrement);
+				if (mCallback)
+					mCallback(mValue);
+				return true;
+			}
+			return false;
+		}
+
+	private:
+		std::string mNumberFormat;
+		Scalar mMouseDownValue;
+		Scalar mValueIncrement;
+		Scalar mMinValue, mMaxValue;
+		Point mMouseDownPos{ -1,-1 };
+	};
+}
