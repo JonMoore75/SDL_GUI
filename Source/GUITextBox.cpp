@@ -87,7 +87,7 @@ namespace SGUI
 				if (time - mLastClick < 0.25)
 				{
 					mSelectionPos = 0;
-					mCursorPos = utf8::distance(mValue.begin(), mValue.end());
+					mCursorPos = static_cast<int>( utf8::distance(mValue.begin(), mValue.end()) );
 				}
 				else /// Single click, update cursor position
 					updateCursor(p.x, modifiers);
@@ -202,7 +202,7 @@ namespace SGUI
 				break;
 			case SDLK_END:
 				SelectWithShift(modifiers);
-				mCursorPos = utf8::distance(mValue.begin(), mValue.end());
+				mCursorPos = static_cast<int>( utf8::distance(mValue.begin(), mValue.end()) );
 				break;
 			case SDLK_BACKSPACE:
 				if (!deleteSelection())
@@ -230,7 +230,7 @@ namespace SGUI
 			case SDLK_a:
 				if (modifiers & KMOD_CTRL)
 				{
-					mCursorPos = utf8::distance(mValue.begin(), mValue.end());
+					mCursorPos = static_cast<int>( utf8::distance(mValue.begin(), mValue.end()) );
 					mSelectionPos = 0;
 				}
 				break;
@@ -360,7 +360,7 @@ namespace SGUI
 
 	void TextBox::CalculateGlyphs(FontTTF& mFont)
 	{
-		int numCharacters = utf8::distance(mValue.begin(), mValue.end());
+		int numCharacters = static_cast<int>( utf8::distance(mValue.begin(), mValue.end()) );
 		mGlyphs.clear();
 
 		auto it = mValue.begin();
@@ -482,7 +482,7 @@ namespace SGUI
 	{
 		if (mCursorPos > 0)
 		{
-			int numGlyphs = utf8::distance(mValue.begin(), mValue.end());
+			int numGlyphs = static_cast<int>( utf8::distance(mValue.begin(), mValue.end()) );
 			int prevCPos = mCursorPos > 0 ? mCursorPos - 1 : 0;
 			int nextCPos = mCursorPos < numGlyphs ? mCursorPos + 1 : numGlyphs;
 			int prevCX = cursorIndex2Position(prevCPos) - mTextClipRect.x - mPos.x;
@@ -620,7 +620,7 @@ namespace SGUI
 
 	void TextBox::pasteFromClipboard()
 	{
-		int numChars = utf8::distance(mValue.begin(), mValue.end());
+		int numChars = static_cast<int>( utf8::distance(mValue.begin(), mValue.end()) );
 
 		auto insertPosIt = mValue.begin();
 
