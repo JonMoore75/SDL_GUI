@@ -160,6 +160,8 @@ namespace SGUI
 				if (mCallback && !mCallback(mValue))
 					mValue = mValueBackup;
 
+				mRedrawText = true;
+
 				mCommitted = true;
 				mCursorPos = -1;
 				mSelectionPos = -1;
