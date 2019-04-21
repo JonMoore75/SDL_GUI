@@ -1,7 +1,7 @@
 #include "Vec2D.h"
 
 #include <cmath>
-#include <SDL_assert.h>
+#include <SDL2\SDL_assert.h>
 
 Vec2D::Vec2D(double _x, double _y) : x(_x), y(_y)
 {

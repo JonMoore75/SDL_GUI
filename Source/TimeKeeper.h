@@ -1,7 +1,7 @@
 #ifndef _SDLGL_TIMEKEEPER_H
 #define _SDLGL_TIMEKEEPER_H
 
-#include <sdl.h>
+#include <SDL2\sdl.h>
 
 class TimeKeeper
 {

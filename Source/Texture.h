@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-#include <SDL.h>
+#include <SDL2\SDL.h>
 
 #include "Common.h"
 

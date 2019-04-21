@@ -1,6 +1,6 @@
 #include "Font_TTF.h"
 
-#include <SDL_ttf.h>
+#include <SDL2\SDL_ttf.h>
 
 
 FontTTF::FontTTF()

@@ -1,6 +1,6 @@
 #include "SDL_TTF_utf8wrapsize.h"
 
-#include <SDL_ttf.h>
+#include <SDL2\SDL_ttf.h>
 
 SDL_bool CharacterIsDelimiter(char c, const char *delimiters)
 {

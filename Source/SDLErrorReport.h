@@ -3,7 +3,7 @@
 #pragma once
 
 #include <string>
-#include <SDL.h>
+#include <SDL2\SDL.h>
 
 void MsgBoxErrorReport(std::string err_msg, std::string err_msg2);
 
