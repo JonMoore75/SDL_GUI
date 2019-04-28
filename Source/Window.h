@@ -29,6 +29,9 @@ public:
 	int GetWidth()	const { return m_Width; }
 
 	void SetTitle(std::string NewTitle) { SDL_SetWindowTitle(m_pWindow, NewTitle.c_str()); }
+	void SetWindowSize(int width, int height);
+
+	Point GetWindowSize() const;
 
 	bool CanRender() const { return (m_pWindow && m_Renderer.GetPtr() && !m_bMinimized); }
 
@@ -71,6 +74,8 @@ private:
 	int m_WindowID = 0;
 	int m_Width = 0;
 	int m_Height = 0;
+
+	float m_Scale = 1.0f;
 
 	//Window state 
 	bool m_bMouseFocus = false;

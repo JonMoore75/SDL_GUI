@@ -26,6 +26,8 @@ public:
 
 	Rect GetViewport() const;
 
+	Point GetOutputSize() const;
+
 	void RenderToTexture(Texture& texture);
 
 	void RenderToFrameBuffer()
@@ -37,8 +39,8 @@ public:
 
 	void FillRect(const Rect& rect, const Color& color);
 	void OutlineRect(const Rect& rect, const Color& color);
-	void Line(int x1, int y1, int x2, int y2, const Color& color);
-	void Point(int x, int y, const Color& color);
+	void DrawLine(int x1, int y1, int x2, int y2, const Color& color);
+	void DrawPoint(int x, int y, const Color& color);
 
 	SDL_BlendMode SetRenderDrawMode(SDL_BlendMode blendMode);
 		

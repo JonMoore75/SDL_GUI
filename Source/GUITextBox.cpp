@@ -334,11 +334,11 @@ namespace SGUI
 		auto upIcon = int_to_utf8(ENTYPO_ICON_CHEVRON_UP);
 		auto dnIcon = int_to_utf8(ENTYPO_ICON_CHEVRON_DOWN);
 
-		mImageSpinUp.SetAlphaBlend();
-		mImageSpinDn.SetAlphaBlend();
-
 		mImageSpinUp.CreateFromText(renderer, upIcon, mFont);
 		mImageSpinDn.CreateFromText(renderer, dnIcon, mFont);
+
+		mImageSpinUp.SetAlphaBlend();
+		mImageSpinDn.SetAlphaBlend();
 
 		int xSpacing = static_cast<int>(mSize.y * 0.3f);
 		mSpinnerSize = mImageSpinUp.GetWidth() + xSpacing;
@@ -447,7 +447,7 @@ namespace SGUI
 		{
 			Color cursorColor{ 255, 192, 0, 255 };
 			int caretx = cursorIndex2Position(mCursorPos) - mTextClipRect.x - mPos.x;
-			renderer.Line(newOffset.x + caretx, newOffset.y, newOffset.x + caretx, newOffset.y + mTextClipRect.h, cursorColor);
+			renderer.DrawLine(newOffset.x + caretx, newOffset.y, newOffset.x + caretx, newOffset.y + mTextClipRect.h, cursorColor);
 		}
 
 		renderer.SetViewport(oldViewport);

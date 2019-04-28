@@ -26,7 +26,7 @@ Uint32 WindowCreationParams::SetRendererCreateFlags()
 
 Uint32 WindowCreationParams::SetWindowCreateFlags()
 {
-	Uint32 iFlags = SDL_WINDOW_SHOWN;
+	Uint32 iFlags = SDL_WINDOW_SHOWN;// | SDL_WINDOW_ALLOW_HIGHDPI;
 	if (Resizeable)
 		iFlags |= SDL_WINDOW_RESIZABLE;
 	if (bFullscreen)

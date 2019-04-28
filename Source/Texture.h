@@ -40,8 +40,8 @@ public:
 
 	bool CreateFromSurface(SDL_Surface* textSurface, Renderer &renderer);
 
-	void SetAlphaBlend() { SDL_SetTextureBlendMode(m_pTexture, SDL_BLENDMODE_BLEND); }
-	void SetAlpha(Uint8 alpha) { SDL_SetTextureAlphaMod(m_pTexture, alpha); }
+	void SetAlphaBlend() { if (m_pTexture) (m_pTexture, SDL_BLENDMODE_BLEND); }
+	void SetAlpha(Uint8 alpha) { if (m_pTexture) SDL_SetTextureAlphaMod(m_pTexture, alpha); }
 
 	int GetHeight() const { return m_Height; }
 	int GetWidth() const { return m_Width; }

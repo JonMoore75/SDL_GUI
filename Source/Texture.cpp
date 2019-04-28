@@ -19,8 +19,11 @@ Texture::~Texture()
 
 void Texture::Release()
 {
-	SDL_DestroyTexture(m_pTexture);
-	m_pTexture = nullptr;
+	if (m_pTexture != nullptr)
+	{
+		SDL_DestroyTexture(m_pTexture);
+		m_pTexture = nullptr;
+	}
 	m_Width = 0;
 	m_Height = 0;
 }
@@ -33,12 +36,14 @@ void Texture::Render(Renderer& renderer, Point pos) const
 
 void Texture::RenderStretch(Renderer& renderer, Rect* pDestRect /*= nullptr*/) const
 {
+	SDL_assert(renderer.GetPtr());
 	if (renderer.GetPtr() && m_pTexture)
 		SDL_RenderCopy(renderer.GetPtr(), m_pTexture, &m_ClipRect, pDestRect);
 }
 
 bool Texture::Create(Renderer& renderer, Uint32 format, int access, int w, int h)
 {
+	SDL_assert(renderer.GetPtr());
 	Release();
 
 	m_pTexture = SDL_CreateTexture(renderer.GetPtr(), format, access, w, h);
@@ -105,6 +110,7 @@ bool Texture::CreateFromText_Fast(Renderer& renderer, std::string text, FontTTF&
 
 bool Texture::CreateFromSurface(SDL_Surface* textSurface, Renderer &renderer)
 {
+	SDL_assert(renderer.GetPtr());
 	Release();
 
 	if (textSurface == nullptr)

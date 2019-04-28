@@ -133,7 +133,7 @@ void MainLoop(std::function<bool(SDL_Event& Event)> OnEvent, std::function<void(
 {
 	bool running = true;
 
-	// Application will indicate quit by setting m_Running to false
+	// Application will indicate quit by setting running to false
 	// until then we loop thro event handling and rendering each frame
 	while (running)
 	{
@@ -155,6 +155,26 @@ void MainLoop(std::function<bool(SDL_Event& Event)> OnEvent, std::function<void(
 		// Draw our frame
 		Render();
 	}
+}
+
+float GetDisplayScaling(int displayIndex/* = 0*/)
+{
+	const float defaultDpi =
+#ifdef __APPLE__
+		72.0f;
+#elif defined(_WIN32)
+		96.0f;
+#else
+		static_assert(false, "No system default DPI set for this platform.");
+#endif
+
+	float dpi = defaultDpi;
+
+	int res = SDL_GetDisplayDPI(displayIndex, NULL, &dpi, NULL);
+	if (res != 0)
+		dpi = defaultDpi;
+
+	return dpi / defaultDpi;
 }
 
 std::string int_to_utf8(int c)

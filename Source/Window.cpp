@@ -16,8 +16,11 @@ void Window::Release()
 	m_Renderer.Release();
 
 	// Destroy the window
-	SDL_DestroyWindow(m_pWindow);
-	m_pWindow = nullptr;
+	if (m_pWindow != nullptr)
+	{
+		SDL_DestroyWindow(m_pWindow);
+		m_pWindow = nullptr;
+	}
 }
 
 bool Window::Create(std::string title, int x, int y, int w, int h, Uint32 flags)
@@ -29,8 +32,15 @@ bool Window::Create(std::string title, int x, int y, int w, int h, Uint32 flags)
 	if (m_pWindow == nullptr)
 		return false;
 
-	if (flags | SDL_WINDOW_FULLSCREEN_DESKTOP)
+	m_Scale = GetDisplayScaling();
+
+	if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
 		SDL_GetWindowSize(m_pWindow, &w, &h);
+	else if (m_Scale != 1)
+	{
+		// Scales window size based on dpi scaling
+		SetWindowSize(w, h);
+	}
 
 	m_Width = w;
 	m_Height = h;
@@ -61,5 +71,25 @@ void Window::Present()
 {
 	if (CanRender())
 		m_Renderer.Present();
+}
+
+void Window::SetWindowSize(int width, int height)
+{
+	SDL_assert(m_pWindow);
+	
+	SDL_SetWindowSize(m_pWindow, static_cast<int>(width*m_Scale), static_cast<int>(height*m_Scale));
+
+	m_Width = width;
+	m_Height = height;
+}
+
+Point Window::GetWindowSize() const
+{
+	SDL_assert(m_pWindow);
+
+	Point rSize{ 0,0 };
+	SDL_GetWindowSize(m_pWindow, &rSize.x, &rSize.y);
+
+	return rSize;
 }
 

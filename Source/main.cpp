@@ -124,36 +124,42 @@ private:
 	SGUI::RootWidget mGUI; /// Root widget that stores the whole of this scenes GUI
 };
 
+bool CreateSDLWindow(Window& window, WindowCreationParams& createParam)
+{
+	/// Create a window, report error if window not created
+	if (!window.Create("Test Window",
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
+		createParam.iWidth, createParam.iHeight,
+		createParam.SetWindowCreateFlags()))
+	{
+		MsgBoxErrorReport("Window Creation Failed.\n", SDL_GetError());
+		return false;
+	}
+
+	/// Creates a renderer and clears the window
+	if (!window.CreateRenderer(createParam.SetRendererCreateFlags()))
+	{
+		MsgBoxErrorReport("Renderer Creation Failed.\n", SDL_GetError());
+		return false;
+	}
+
+	return true;
+}
 
 
 int main(int argc, char *argv[])
 {
- 	WindowCreationParams createParam;
-
 	InitSDL();
 
+	WindowCreationParams createParam;
 	Window window;
+
+	if (!CreateSDLWindow(window, createParam))
+		return -1;
 
 	{ /// Scope to make sure mGUI is destroyed before Window 
 		SGUI::RootWidget mGUI;
-
-		/// Create a window, report error if window not created
-		if (!window.Create("Test Window",
-			SDL_WINDOWPOS_UNDEFINED,
-			SDL_WINDOWPOS_UNDEFINED,
-			createParam.iWidth, createParam.iHeight,
-			createParam.SetWindowCreateFlags()))
-		{
-			MsgBoxErrorReport("Window Creation Failed.\n", SDL_GetError());
-			return false;
-		}
-
-		/// Creates a renderer and clears the window
-		if (!window.CreateRenderer(createParam.SetRendererCreateFlags()))
-		{
-			MsgBoxErrorReport("Renderer Creation Failed.\n", SDL_GetError());
-			return false;
-		}
 
 		InitialiseGUI(mGUI, window);
 

@@ -97,6 +97,8 @@ bool InitSDL();
 void ShutdownSDL();
 void MainLoop(std::function<bool(SDL_Event& Event)> OnEvent, std::function<void()> Render);
 
+float GetDisplayScaling(int displayIndex = 0);
+
 using Keymod = SDL_Keymod;
 using Keycode = SDL_Keycode;
 using Scancode = SDL_Scancode;

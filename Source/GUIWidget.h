@@ -264,13 +264,13 @@ namespace SGUI
 		std::vector<Widget*> mChildren;
 		ref<Theme> mTheme;
 		ref<Layout> mLayout;
-		Widget*			mParent{ nullptr };
-		std::string		mId;
-		std::string		mTooltip;
+		Widget*		mParent{ nullptr };
+		std::string	mId;
+		std::string	mTooltip;
 		Point		mPos; 
 		Point		mSize;
 		Point		mFixedSize;
-		int				mFontSize{ 15 };
+		int			mFontSize{ 15 };
 		bool mVisible{ true }; 
 		bool mEnabled{ true };
 		bool mFocused{ false }; 

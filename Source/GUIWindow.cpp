@@ -32,10 +32,10 @@ namespace SGUI
 			Rect headerRect{ offset, Point{mSize.x, hh} };
 
 			renderer.FillRect(headerRect, mTheme->mWindowHeaderGradientTop);
-			renderer.Line(	offset.x,			offset.y, 
+			renderer.DrawLine(	offset.x,			offset.y, 
 							offset.x + mSize.x, offset.y, 
 							mTheme->mWindowHeaderSepTop);
-			renderer.Line(	offset.x,			offset.y + hh-1, 
+			renderer.DrawLine(	offset.x,			offset.y + hh-1, 
 							offset.x + mSize.x, offset.y + hh-1, 
 							mTheme->mWindowHeaderSepBot);
 

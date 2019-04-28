@@ -9,7 +9,6 @@
 
 SGUI::RootWidget::RootWidget()
 {
-
 	mTimer.Initialize();
 	StartUnicodeEvents();
 	setTheme(new Theme());
