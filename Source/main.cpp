@@ -137,6 +137,9 @@ bool CreateSDLWindow(Window& window, WindowCreationParams& createParam)
 		return false;
 	}
 
+	// Fix for direct3D display bugs
+	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "openGL");
+
 	/// Creates a renderer and clears the window
 	if (!window.CreateRenderer(createParam.SetRendererCreateFlags()))
 	{
